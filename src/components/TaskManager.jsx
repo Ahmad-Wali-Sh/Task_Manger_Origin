@@ -22,9 +22,9 @@ export function getDetails(...data) {
 
 export default function TaskManager(props) {
 
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-  })
+  // $(function () {
+  //   $('[data-toggle="tooltip"]').tooltip()
+  // })
 
   // console.log(props);
 
@@ -82,30 +82,17 @@ export default function TaskManager(props) {
     let isChecked = e.target.checked;
     console.log(isChecked);
   }
+
+  const [find, setFind] = useState([])
   const token = "ABCdeadjfai"
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.get(
         url + `?contract-no=${contractNoRef.current.value}`,
-        {
-          headers: {
-            Authorization: "Token " + token.user.token,
-          },
-        }
       );
       console.log(res.data.results);
-      const data = res.data.results[0];
-      // console.log(contractNoRef.current.value)
-      setContract({
-        ...contract,
-        package: data.packages,
-        address: data.address,
-        organization: data.organization,
-        contact: data.poc_number,
-        full_name: data.poc_name,
-        contract_no: data.contract_no,
-      });
+      setFind(res.data.results[0])
     } catch (err) {
       console.log(err);
     }
@@ -125,7 +112,7 @@ export default function TaskManager(props) {
   const InstallArray = contenter.map(item => item.project.name == "Installation" && <MainDetails data={[item]} />)
   const ChangeArray = contenter.map(item => item.project.name == "Change Location" && <MainDetails data={[item]} />)
   // const TroubleArray = <MainDetails data={contenter} />
-  
+
   React.useEffect(() => {
     axios.get(TASK_URL, {
       headers: {
@@ -137,6 +124,124 @@ export default function TaskManager(props) {
 
 
   }, [])
+
+  const [stage, setStage] = useState([])
+  const [projecter, setProjecter] = useState([])
+  const [tag, setTag] = useState([])
+  const [member, setMember] = useState([])
+
+  const STAGE_URL = process.env.REACT_APP_STAGE
+  const PROJECT_URL = process.env.REACT_APP_PROJECT
+  const TAG_URL = process.env.REACT_APP_TAG
+  const MEMBER_URL = process.env.REACT_APP_MEMBERS
+
+  React.useEffect(() => {
+    axios.get(STAGE_URL, {
+      headers: {
+        Authorization: token1
+      }
+    }).then(res => {
+      setStage(res.data.results)
+    })
+  }, [])
+
+
+  React.useEffect(() => {
+    axios.get(MEMBER_URL, {
+      headers: {
+        Authorization: token1
+      }
+    }).then(res => {
+      setMember(res.data.results)
+    })
+  }, [])
+
+
+
+  React.useEffect(() => {
+    axios.get(PROJECT_URL, {
+      headers: {
+        Authorization: token1
+      }
+    }).then(res => {
+      setProjecter(res.data.results)
+    })
+  }, [])
+
+
+  React.useEffect(() => {
+    axios.get(TAG_URL, {
+      headers: {
+        Authorization: token1
+      }
+    }).then(res => {
+      setTag(res.data.results)
+    })
+  }, [])
+
+
+  let [form, setForm] = React.useState({
+    title: "",
+    assigned: [],
+    deadline: "",
+    project: null,
+    stage: 1,
+    tag: null
+  })
+  
+
+  console.log(form)
+
+
+  let handlerChange = (event) => {
+    setForm({
+      [event.target.name] : event.target.value
+    })}
+
+  function avatarHandler (event) {
+    if(event.target.checked) {
+      if(!form.assigned.includes(event.target.value)) {
+        setForm(prevState => ({
+          assigned: [...prevState.assigned, event.target.value]
+        }));
+      }
+    }
+    if(!event.target.checked) {
+      setForm(prevState => ({
+        assigned: prevState.assigned.filter(assign => assign !== event.target.value)
+      }))
+    }
+  }
+
+
+
+  const createTask = async (event) => {
+    event.preventDefault()
+    const loginForm = new FormData();
+    loginForm.append("title", form.title)
+    loginForm.append("assigned", form.assigned)
+    loginForm.append("contract", find.id)
+    loginForm.append("deadline", new Date(form.deadline).toISOString())
+    loginForm.append("project", form.project)
+    loginForm.append("stage", form.stage)
+    loginForm.append("tag", form.tag)
+    // console.log(loginForm)
+
+    try {
+      const respone = await axios({
+        method: "post",
+        url: TASK_URL,
+        data: loginForm,
+        header: { "Content-Type": "application/json" }
+      })
+      console.log(respone)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
 
 
   // function getList() {
@@ -155,7 +260,7 @@ export default function TaskManager(props) {
   //         })
   //         return () => mounted = false;
   // }, [])
-
+  const projectArray = projecter.map(item => projecter.name)
 
   const [content, setContent] = useState([])
 
@@ -214,7 +319,7 @@ export default function TaskManager(props) {
                     <i className="fa-solid fa-plus "></i>
                   </button>
                 </div>
-               
+
                 <div
                   className="modal fade"
                   id="addTaskModal"
@@ -308,6 +413,7 @@ export default function TaskManager(props) {
                                   aria-label="Recipient's username"
                                   aria-describedby="button-addon2"
                                   ref={contractNoRef}
+
                                 />
                                 <button
                                   className="btn btn-outline-secondary"
@@ -318,120 +424,202 @@ export default function TaskManager(props) {
                                 </button>
                               </div>
                             </form>
-                            <div className="mb-5">
+
+                            <form onSubmit={createTask}>
                               <div className="row">
-                                <div className="col-1 col-sm-1">
-                                  <label
-                                    htmlFor="project"
-                                    className="col-form-label text-muted"
-                                  >
-                                    Project
-                                  </label>
-                                </div>
-                                <div className="col-3 col-sm-4">
-                                  <select
-                                    className="form-select"
-                                    id="project"
-                                    aria-label="Default select example"
-                                    ref={projectRef}
-                                    name="project"
-                                    onChange={handleChange}
-                                    value={project.selectedProject}
-                                  >
-                                    <option value="select" disabled>
-                                      Select
-                                    </option>
-                                    <option value="installation">
-                                      Installation
-                                    </option>
-                                    <option value="troubleshoot">
-                                      Troubleshoot
-                                    </option>
-                                    <option value="onlineSupport">
-                                      Online Support
-                                    </option>
-                                    <option value="changeLocation">
-                                      Change Location
-                                    </option>
-                                    <option value="amendment">Amendment</option>
-                                    <option value="survey">Survey</option>
-                                  </select>
-                                </div>
-                                <div className="col-1"></div>
                                 {/* <div className="col-2 col-sm-1"></div> */}
                                 <div className="col-1 col-sm-1">
                                   <label
                                     htmlFor="project"
                                     className="col-form-label text-muted"
                                   >
-                                    Customer
+                                    Title
                                   </label>
                                 </div>
-                                <div className="col-5 col-sm-5">
+                                <div className="col-11 col-sm-11">
                                   <div className="input-group mb-3">
                                     <span
                                       className="input-group-text"
                                       id="basic-addon1"
                                     >
-                                      <i className="fa-solid fa-user"></i>
+                                      <i className="fa-solid fa-pen"></i>
                                     </span>
                                     <input
                                       type="text"
+                                      name="title"
                                       className="form-control"
-                                      placeholder="contract number"
                                       aria-label="Username"
                                       aria-describedby="basic-addon1"
+                                      onChange={handlerChange}
+
                                     />
                                   </div>
                                 </div>
                               </div>
-                              <div className="row">
-                                <div className="col-1 col-sm-1">
-                                  <label
-                                    htmlFor="deadline"
-                                    className="col-form-label text-muted"
-                                  >
-                                    Deadline
-                                  </label>
-                                </div>
-                                <div className="col-3 col-sm-4">
-                                  <div className="input-group mb-3">
-                                    <input
-                                      type="date"
-                                      className="form-control"
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col-1"></div>
-                                <div className="col-1">
-                                  <label
-                                    htmlFor="tag"
-                                    className="col-form-label text-muted"
-                                  >
-                                    Tag
-                                  </label>
-                                </div>
-                                <div className="col-5 col-sm-5">
-                                  <div className="input-group">
+                              <div className="mb-5">
+                                <div className="row">
+                                  <div className="col-1 col-sm-1">
                                     <label
-                                      className="input-group-text"
-                                      htmlFor="tag"
+                                      htmlFor="project"
+                                      className="col-form-label text-muted"
                                     >
-                                      <i className="fa-solid fa-tag"></i>
+                                      Project
                                     </label>
+                                  </div>
+
+
+                                  <div className="col-3 col-sm-4">
                                     <select
                                       className="form-select"
-                                      id="tag"
+                                      id="project"
                                       aria-label="Default select example"
+                                      ref={projectRef}
+                                      name="project"
+                                      onChange={handlerChange}
+                                    
                                     >
-                                      <option >Normal</option>
-                                      <option value="1">Urgent</option>
+                                      {projecter.map(item => <option value={item.id}>
+                                        {item.name}
+                                      </option>)}
                                     </select>
+
+                                  </div>
+
+                                  <div className="col-1"></div>
+                                  {/* <div className="col-2 col-sm-1"></div> */}
+                                  <div className="col-1 col-sm-1">
+                                    <label
+                                      htmlFor="project"
+                                      className="col-form-label text-muted"
+                                    >
+                                      Customer
+                                    </label>
+                                  </div>
+                                  <div className="col-5 col-sm-5">
+                                    <div className="input-group mb-3">
+                                      <span
+                                        className="input-group-text"
+                                        id="basic-addon1"
+                                      >
+                                        <i className="fa-solid fa-user"></i>
+                                      </span>
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="contract number"
+                                        aria-label="Username"
+                                        name="contract"
+                                        aria-describedby="basic-addon1"
+                                        value={find.contract_no}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="row">
+                                  <div className="col-1 col-sm-1">
+                                    <label
+                                      htmlFor="deadline"
+                                      className="col-form-label text-muted"
+                                    >
+                                      Deadline
+                                    </label>
+                                  </div>
+                                  <div className="col-3 col-sm-4">
+                                    <div className="input-group mb-3">
+                                      <input
+                                        type="date"
+                                        className="form-control"
+                                        name="deadline"
+                                        onChange={handlerChange}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="col-1"></div>
+                                  <div className="col-1">
+                                    <label
+                                      htmlFor="tag"
+                                      className="col-form-label text-muted"
+                                    >
+                                      Tag
+                                    </label>
+                                  </div>
+                                  <div className="col-5 col-sm-5">
+                                    <div className="input-group">
+                                      <label
+                                        className="input-group-text"
+                                        htmlFor="tag"
+                                      >
+                                        <i className="fa-solid fa-tag"></i>
+                                      </label>
+                                      <select
+                                        className="form-select"
+                                        id="tag"
+                                        aria-label="Default select example"
+                                        name="tag"
+                                        onChange={handlerChange}
+                                      >
+                                        {tag.map(item => <option value={item.id}>{item.name}</option>)}
+
+
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div
+                                  className="row mt-1"
+                                  id="pills-tab"
+                                  role="tablist"
+                                >
+                                  <div className="col-12">
+                                    <nav>
+                                      <div
+                                        className="nav nav-tabs"
+                                        id="nav-tab"
+                                        role="tablist"
+                                      >
+                                        <span
+                                          className="nav-link active"
+                                          id="nav-home-tab"
+                                          data-bs-toggle="tab"
+                                          data-bs-target="#nav-home"
+                                          type="button"
+                                          role="tab"
+                                          aria-controls="nav-home"
+                                          aria-selected="true"
+                                        >
+                                          Description
+                                        </span>
+                                      </div>
+                                    </nav>
+                                    <div
+                                      className="tab-content"
+                                      id="nav-tabContent"
+                                    >
+                                      <div
+                                        className="tab-pane fade show active"
+                                        id="nav-home"
+                                        role="tabpanel"
+                                        aria-labelledby="nav-home-tab"
+                                      >
+                                        <textarea
+                                          className="form-control border-top-0"
+                                          placeholder="Leave a description here"
+                                          id="floatingTextarea"
+                                          name="description"
+                                          rows="6"
+                                          onChange={handlerChange}
+                                        ></textarea>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                            {project.selectedProject == "installation" && (
+                              <div className="modal-footer">
+                                {/* <input type="submit" className="btn btn-primary" value="Create Task" /> */}
+                                <button className="btn btn-primary" type="submit">Create Task</button>
+                              </div>
+                            </form>
+                            {projectArray == "Installation" && (
                               <GeneralDetails
                                 contract_no={contract.contract_no}
                                 full_name={contract.full_name}
@@ -441,7 +629,7 @@ export default function TaskManager(props) {
                                 package={contract.package}
                               />
                             )}
-                            {project.selectedProject == "onlineSupport" && (
+                            {projectArray == "Online Support" && (
                               <OnlineSupport />
                             )}
 
@@ -461,6 +649,7 @@ export default function TaskManager(props) {
                             )}
                             {/* END AMENDMENT */}
 
+
                             {/* LOG NOTE AND MESSAGE */}
                             <LogMessage />
                             {/* END LOG NOTE AND MESSAGE */}
@@ -473,28 +662,70 @@ export default function TaskManager(props) {
                             aria-labelledby="profile-tab"
                             tabindex="0"
                           >
-                            <Members />
+                            <div className="d-flex justify-content-center m-4">
+                              {/* <img
+                                src="/dist/img/avatar4.jpg"
+                                alt="avatar"
+                                className="avatar"
+                              />
+                              <img
+                                src="/dist/img/avatar1.jpeg"
+                                alt="avatar"
+                                className="avatar"
+                              /> */}
+                              <img
+                                src="../../images/avatar1.jpeg"
+                                alt="avatar"
+                                className="avatar"
+                              />
+                            </div>
+                            <div className="col-6 m-auto">
+                              <div className="input-group flex-nowrap">
+                                <span
+                                  class="input-group-text"
+                                  id="addon-wrapping"
+                                >
+                                  <i className="fa-solid fa-bars-filter"></i>
+                                </span>
+                                <input
+                                  type="text"
+                                  class="form-control"
+                                  placeholder="Filter members"
+                                  aria-label="Username"
+                                  aria-describedby="addon-wrapping"
+                                />
+                              </div>
+                            </div>
+                            <div className="col-5 membersbox">
+                              <ul>
+                                {member.map(item => (
+                                  <li className="d-flex justify-content-between padd">
+                                    <div className="list-item">
+                                      <img
+                                        src={item.avatar}
+                                        alt="avatar"
+                                        className="avatar pad"
+                                      />
+                                      <span className="ml-4">
+                                        {item.name}
+                                      </span>
+                                    </div>
+                                    <input
+                                      type="checkbox"
+                                      className="mt-3 mr-3"
+                                      name="assigned"
+                                      value={item.id}
+                                      onChange={avatarHandler}
+                                    />
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="modal-footer">
-                        {/* <button
-                          type="button"
-                          className="btn btn-secondary"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        >
-                          Close
-                        </button> */}
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={() => console.log("Clicked")}
-                        >
-                          Create Task
-                        </button>
-                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -503,15 +734,13 @@ export default function TaskManager(props) {
             <div className="details">
 
               <Details title="Installation" className="spacer">
-              {InstallArray}
+                {InstallArray}
               </Details>
 
               <Details title="Troubleshoot" className="spacer">
-              {TroubleArray}
+                {TroubleArray}
               </Details>
               <Details title="Online Support" className="spacer">
-                {/* <MainDetails name="Mored Arian" internet="5Mb-24h Dedicated" status="Normal" number="1/2" badge="primary" avatar3="/images/avatar3.jpeg" avatar1="/images/avatar1.jpeg" avatar2="/images/avatar2.jpeg"/>
-              <MainDetails name="Nawid Rasooly" internet="2Mb-12h Dedicated" status="Pending" number="1/2" badge="warning" avatar3="/images/avatar3.jpeg" avatar1="/images/avatar1.jpeg" avatar2="/images/avatar2.jpeg" avatar4="/images/avatar4.jpg"/> */}
                 {OnlineArray}
               </Details>
               <Details title="Change Location" className="spacer">
@@ -525,5 +754,6 @@ export default function TaskManager(props) {
       </div>
     </div>
   );
-}
 
+
+}
