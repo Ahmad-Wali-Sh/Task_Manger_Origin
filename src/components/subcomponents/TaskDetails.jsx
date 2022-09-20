@@ -22,6 +22,7 @@ const TaskDetails = (props) => {
     console.log(isChecked);
   }
 
+  console.log(data)
 
 
 
@@ -35,7 +36,7 @@ const TaskDetails = (props) => {
   useEffect(() => {
     axios.get(INSTALL_URL + `?id=${data.id}`
     ).then(res => {
-      setInstallation(res.data.results[0]);
+      setInstallation(res.data.results);
       setLink(res.data.results[0].link_details)
       console.log(res.data.results)
     })
@@ -59,14 +60,14 @@ const TaskDetails = (props) => {
     pppoe_user: "Name",
     pppoe_password: "98776",
     description: ""
-})
+  })
 
   console.log(form.pppoe_user)
 
   const handlerChange = (event) => {
     setForm({
       ...form,
-        [event.target.name] : event.target.value
+      [event.target.name]: event.target.value
     })
     // console.log(event.target.name)
     // console.log(event.target.value)
@@ -82,10 +83,10 @@ const TaskDetails = (props) => {
 
     try {
       const respone = await axios({
-        method: "patch",
+        method: "post",
         url: INSTALL_URL + `${installation.id}/`,
         data: loginForm,
-        header: { "Content-Type": "application/json" }
+        header: { "Content-Type" : "application/json",}
       })
       console.log(respone)
     } catch (error) {
@@ -387,6 +388,7 @@ const TaskDetails = (props) => {
         </div>
         {/* <GeneralDetails /> */}
         <section>
+
           <h3 className="mt-3">General Details</h3>
           <div className="row mt-3">
             <label
@@ -536,23 +538,74 @@ const TaskDetails = (props) => {
                   role="tabpanel"
                   aria-labelledby="nav-home-tab"
                 >
-                    </div>
+                </div>
 
               </div>
             </div>
           </div>
-                  <form onSubmit={handleSubmit}>
-                  <textarea
-                    className="form-control border-top-0"
-                    placeholder="Leave a description here"
-                    name="description"
-                    id="floatingTextarea"
-                    rows="6"
-                    onChange={handlerChange}
-                    ></textarea>
-          <h3 className="mt-3">PPPoE Settings</h3>
+          <textarea
+            className="form-control border-top-0"
+            placeholder="Leave a description here"
+            id="floatingTextarea"
+            rows="6"
+            defaultValue={data.description}
+          ></textarea>
 
-          
+          <form onSubmit={handleSubmit}>
+            <h3 className="mt-3">PPPoE Settings</h3>
+            <div
+              className="row mt-1"
+              id="pills-tab"
+              role="tablist"
+            >
+              <div className="col-12">
+                <nav>
+                  <div
+                    className="nav nav-tabs"
+                    id="nav-tab"
+                    role="tablist"
+                  >
+                    <span
+                      className="nav-link active"
+                      id="nav-home-tab"
+                      data-bs-toggle="tab"
+                      data-bs-target="#nav-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="nav-home"
+                      aria-selected="true"
+                    >
+                      Description
+                    </span>
+                  </div>
+                </nav>
+
+                <div
+                  className="tab-content"
+                  id="nav-tabContent"
+                >
+                  <div
+                    className="tab-pane fade show active"
+                    id="nav-home"
+                    role="tabpanel"
+                    aria-labelledby="nav-home-tab"
+                  >
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <textarea
+              className="form-control border-top-0"
+              placeholder="Leave a description here"
+              name="description"
+              id="floatingTextarea"
+              rows="6"
+              onChange={handlerChange}
+              defaultValue={installation.description}
+            ></textarea>
+
+
             <div className="row mt-1">
               <label
                 htmlFor="inputEmail3"
@@ -588,7 +641,7 @@ const TaskDetails = (props) => {
                   defaultValue={installation.pppoe_password}
                   onChange={handlerChange}
                 />
-                <input type="submit" value="submit" />
+                <button className="btn btn-primary" type="submit">Create Task</button>
               </div>
             </div>
           </form>

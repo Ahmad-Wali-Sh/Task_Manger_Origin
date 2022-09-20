@@ -112,6 +112,7 @@ export default function TaskManager(props) {
   const InstallArray = contenter.map(item => item.project.name == "Installation" && <MainDetails data={[item]} />)
   const ChangeArray = contenter.map(item => item.project.name == "Change Location" && <MainDetails data={[item]} />)
   // const TroubleArray = <MainDetails data={contenter} />
+  console.log(contenter)
 
   React.useEffect(() => {
     axios.get(TASK_URL, {
@@ -184,47 +185,58 @@ export default function TaskManager(props) {
     title: "",
     assigned: [],
     deadline: "",
-    project: null,
+    project: 1,
+    description: "",
     stage: 1,
-    tag: null
+    contract: 1,
+    tag: 1
   })
-  
+
 
   console.log(form)
 
 
   let handlerChange = (event) => {
-    setForm({
-      [event.target.name] : event.target.value
-    })}
+    if (event.target.name !== 'assigned') {
+      setForm({
+        ...form,
+        [event.target.name]: event.target.value
+      })
+    } else {
+      if (event.target.checked) {
 
-  function avatarHandler (event) {
-    if(event.target.checked) {
-      if(!form.assigned.includes(event.target.value)) {
         setForm(prevState => ({
+          ...form,
           assigned: [...prevState.assigned, event.target.value]
         }));
+
+      }
+      if (!event.target.checked) {
+        setForm(prevState => ({
+          ...form,
+          assigned: prevState.assigned.filter(assign => assign !== event.target.value)
+        }))
       }
     }
-    if(!event.target.checked) {
-      setForm(prevState => ({
-        assigned: prevState.assigned.filter(assign => assign !== event.target.value)
-      }))
-    }
   }
+
+  // function avatarHandler (event) {
+
+  // }
 
 
 
   const createTask = async (event) => {
     event.preventDefault()
-    const loginForm = new FormData();
+    const loginForm = new FormData()
     loginForm.append("title", form.title)
-    loginForm.append("assigned", form.assigned)
     loginForm.append("contract", find.id)
+    form.assigned.map(item => loginForm.append('assigned', JSON.parse(item)))
     loginForm.append("deadline", new Date(form.deadline).toISOString())
     loginForm.append("project", form.project)
-    loginForm.append("stage", form.stage)
+    loginForm.append("stage", 1)
     loginForm.append("tag", form.tag)
+    loginForm.append("description", form.description)
     // console.log(loginForm)
 
     try {
@@ -232,7 +244,7 @@ export default function TaskManager(props) {
         method: "post",
         url: TASK_URL,
         data: loginForm,
-        header: { "Content-Type": "application/json" }
+        header: { "Content-Type": "multipart/form-data" }
       })
       console.log(respone)
     } catch (error) {
@@ -476,8 +488,11 @@ export default function TaskManager(props) {
                                       ref={projectRef}
                                       name="project"
                                       onChange={handlerChange}
-                                    
+
                                     >
+                                      <option selected>
+                                        Select
+                                      </option>
                                       {projecter.map(item => <option value={item.id}>
                                         {item.name}
                                       </option>)}
@@ -558,6 +573,9 @@ export default function TaskManager(props) {
                                         name="tag"
                                         onChange={handlerChange}
                                       >
+                                        <option selected>
+                                          Select
+                                        </option>
                                         {tag.map(item => <option value={item.id}>{item.name}</option>)}
 
 
@@ -696,31 +714,34 @@ export default function TaskManager(props) {
                                 />
                               </div>
                             </div>
-                            <div className="col-5 membersbox">
-                              <ul>
-                                {member.map(item => (
-                                  <li className="d-flex justify-content-between padd">
-                                    <div className="list-item">
-                                      <img
-                                        src={item.avatar}
-                                        alt="avatar"
-                                        className="avatar pad"
+                            <form onSubmit={createTask}>
+                              <div className="col-5 membersbox">
+                                <ul>
+                                  {member.map(item => (
+                                    <li className="d-flex justify-content-between padd">
+                                      <div className="list-item">
+                                        <img
+                                          src={item.avatar}
+                                          alt="avatar"
+                                          className="avatar pad"
+                                        />
+                                        <span className="ml-4">
+                                          {item.name}
+                                        </span>
+                                      </div>
+                                      <input
+                                        type="checkbox"
+                                        className="mt-3 mr-3"
+                                        name="assigned"
+                                        value={item.id}
+                                        onChange={handlerChange}
                                       />
-                                      <span className="ml-4">
-                                        {item.name}
-                                      </span>
-                                    </div>
-                                    <input
-                                      type="checkbox"
-                                      className="mt-3 mr-3"
-                                      name="assigned"
-                                      value={item.id}
-                                      onChange={avatarHandler}
-                                    />
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <button className="btn btn-primary" type="submit">submit</button>
+                            </form>
                           </div>
                         </div>
                       </div>
@@ -733,20 +754,42 @@ export default function TaskManager(props) {
             </div>
             <div className="details">
 
-              <Details title="Installation" className="spacer">
+              {/* {InstallArray.includes(true) && <Details title="Installation" className="spacer">
+                {InstallArray}
+              </Details>} */}
+
+              {InstallArray == null ? "" : <Details title="Installation" className="spacer">
                 {InstallArray}
               </Details>
+              }
 
-              <Details title="Troubleshoot" className="spacer">
+              {TroubleArray !== null ? "" : <Details title="Troubleshoot" className="spacer">
                 {TroubleArray}
               </Details>
-              <Details title="Online Support" className="spacer">
+              }
+
+              {/* {TroubleArray.includes(true) && <Details title="Troubleshoot" className="spacer">
+                {TroubleArray} 
+              </Details>} */}
+
+              {OnlineArray == true ? <Details title="Online Support" className="spacer">
                 {OnlineArray}
-              </Details>
-              <Details title="Change Location" className="spacer">
+              </Details> : ""
+              }
+              {/* 
+              {OnlineArray.length > 0 && <Details title="Online Support" className="spacer">
+                {OnlineArray}
+              </Details>} */}
+
+              {ChangeArray == true ? <Details title="Change Location" className="spacer">
                 {ChangeArray}
-              </Details>
-            </div>
+              </Details> : ""
+              }
+
+              {/* {ChangeArray.length > 0 && <Details title="Change Location" className="spacer">
+                {ChangeArray}
+            </Details>} */}
+            </div> 
 
 
           </div>
