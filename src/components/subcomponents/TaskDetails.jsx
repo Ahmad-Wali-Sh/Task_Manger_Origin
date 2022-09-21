@@ -25,14 +25,14 @@ const TaskDetails = (props) => {
   console.log(data)
 
 
-
-
   const [installation, setInstallation] = React.useState([])
   const [link, setLink] = React.useState([])
-
+  const InstallationDetails = installation.map(item => item.id)
   const INSTALL_URL = process.env.REACT_APP_INSTALL
+  const CHECKLIST_URL = process.env.REACT_APP_CHECKLIST
+  const LINK_URL = process.env.REACT_APP_LINK
   const token1 = '8baabc24a9c1a2f3c26d4b7775d45c12f6e4d67c'
-
+  console.log(InstallationDetails)
   useEffect(() => {
     axios.get(INSTALL_URL + `?id=${data.id}`
     ).then(res => {
@@ -59,7 +59,9 @@ const TaskDetails = (props) => {
   let [form, setForm] = React.useState({
     pppoe_user: "Name",
     pppoe_password: "98776",
-    description: ""
+    description: "",
+    task: data.id,
+    link_details: 4
   })
 
   console.log(form.pppoe_user)
@@ -79,12 +81,14 @@ const TaskDetails = (props) => {
     loginForm.append("pppoe_user", form.pppoe_user)
     loginForm.append("pppoe_password", form.pppoe_password)
     loginForm.append("description", form.description)
+    loginForm.append("task", form.task)
+    loginForm.append("link_details", form.link_details)
     console.log(loginForm)
 
     try {
       const respone = await axios({
         method: "post",
-        url: INSTALL_URL + `${installation.id}/`,
+        url: INSTALL_URL,
         data: loginForm,
         header: { "Content-Type" : "application/json",}
       })
@@ -93,6 +97,80 @@ const TaskDetails = (props) => {
       console.log(error)
     }
   }
+
+  const LinkInputChange = (event) => {
+    setLinkDetails({
+      ...linkDetails,
+      [event.target.name]: event.target.value
+    })
+    // console.log(event.target.name)
+    // console.log(event.target.value)
+  }
+
+  const [linkDetails, setLinkDetails] = useState({
+    installation_type: "",
+    device: "",
+    access_point: "",
+    signal: "",
+    ccq: "",
+    cable: "",
+    connector: "",
+    payment: "",
+    bill_number: "",
+    installation_date: "",
+    additional_details: ""
+
+  })
+
+  
+
+  const linkDetailsSubmit = async (event) => {
+    event.preventDefault()
+    const loginForm = new FormData();
+    loginForm.append("installation_type", linkDetails.installation_type)
+    loginForm.append("device", linkDetails.device)
+    loginForm.append("access_point", linkDetails.access_point)
+    loginForm.append("signal", linkDetails.signal)
+    loginForm.append("ccq", linkDetails.ccq)
+    loginForm.append("cable", linkDetails.cable)
+    loginForm.append("connector", linkDetails.connector)
+    loginForm.append("payment", linkDetails.payment)
+    loginForm.append("bill_number", linkDetails.bill_number)
+    loginForm.append("installation_date", new Date(linkDetails.installation_date).toISOString())
+    loginForm.append("additional_details", linkDetails.additional_details)
+
+    console.log(loginForm)
+
+  
+      const respone = await axios({
+        method: "post",
+        url: LINK_URL,
+        data: loginForm,
+        header: { "Content-Type" : "application/json",}
+      })
+      console.log(respone)
+      
+      
+      
+      const UpdateTask = new FormData();
+      UpdateTask.append("link_details", respone.data.id)
+      
+      
+      try {
+      const res = await axios({
+        method: "patch",
+        url: INSTALL_URL + `${InstallationDetails}/`,
+        data: UpdateTask,
+        header: { "Content-Type" : "application/json",}
+      })
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  console.log(InstallationDetails)
 
 
 
@@ -552,100 +630,104 @@ const TaskDetails = (props) => {
           ></textarea>
 
           <form onSubmit={handleSubmit}>
-            <h3 className="mt-3">PPPoE Settings</h3>
-            <div
-              className="row mt-1"
-              id="pills-tab"
-              role="tablist"
-            >
-              <div className="col-12">
-                <nav>
-                  <div
-                    className="nav nav-tabs"
-                    id="nav-tab"
-                    role="tablist"
-                  >
-                    <span
-                      className="nav-link active"
-                      id="nav-home-tab"
-                      data-bs-toggle="tab"
-                      data-bs-target="#nav-home"
-                      type="button"
-                      role="tab"
-                      aria-controls="nav-home"
-                      aria-selected="true"
+            {installation.map(item => (
+              <>
+              <h3 className="mt-3">PPPoE Settings</h3>
+              <div
+                className="row mt-1"
+                id="pills-tab"
+                role="tablist"
+              >
+                <div className="col-12">
+                  <nav>
+                    <div
+                      className="nav nav-tabs"
+                      id="nav-tab"
+                      role="tablist"
                     >
-                      Description
-                    </span>
-                  </div>
-                </nav>
-
-                <div
-                  className="tab-content"
-                  id="nav-tabContent"
-                >
+                      <span
+                        className="nav-link active"
+                        id="nav-home-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-home"
+                        type="button"
+                        role="tab"
+                        aria-controls="nav-home"
+                        aria-selected="true"
+                      >
+                        Description
+                      </span>
+                    </div>
+                  </nav>
+  
                   <div
-                    className="tab-pane fade show active"
-                    id="nav-home"
-                    role="tabpanel"
-                    aria-labelledby="nav-home-tab"
+                    className="tab-content"
+                    id="nav-tabContent"
                   >
+                    <div
+                      className="tab-pane fade show active"
+                      id="nav-home"
+                      role="tabpanel"
+                      aria-labelledby="nav-home-tab"
+                    >
+                    </div>
+  
                   </div>
-
                 </div>
               </div>
-            </div>
-            <textarea
-              className="form-control border-top-0"
-              placeholder="Leave a description here"
-              name="description"
-              id="floatingTextarea"
-              rows="6"
-              onChange={handlerChange}
-              defaultValue={installation.description}
-            ></textarea>
-
-
-            <div className="row mt-1">
-              <label
-                htmlFor="inputEmail3"
-                className="col-sm-1 col-form-label text-muted"
-              >
-                User
-              </label>
-              <div className="col-sm-4">
-                <input
-                  type="text"
-                  name="pppoe_user"
-                  id="inputEmail3"
-                  placeholder="..."
-                  className="form-control"
-                  defaultValue={installation.pppoe_user}
-                  onChange={handlerChange}
-                />
+              <textarea
+                className="form-control border-top-0"
+                placeholder="Leave a description here"
+                name="description"
+                id="floatingTextarea"
+                rows="6"
+                onChange={handlerChange}
+                defaultValue={item.description}
+              ></textarea>
+  
+  
+              <div className="row mt-1">
+                <label
+                  htmlFor="inputEmail3"
+                  className="col-sm-1 col-form-label text-muted"
+                >
+                  User
+                </label>
+                <div className="col-sm-4">
+                  <input
+                    type="text"
+                    name="pppoe_user"
+                    id="inputEmail3"
+                    placeholder="..."
+                    className="form-control"
+                    defaultValue={item.pppoe_user}
+                    onChange={handlerChange}
+                  />
+                </div>
+                <div className="col-sm-1"></div>
+                <label
+                  htmlFor="inputEmail3"
+                  className="col-sm-1 col-form-label text-muted"
+                >
+                  Password
+                </label>
+                <div className="col-sm-4">
+                  <input
+                    type="text"
+                    name="pppoe_password"
+                    id="inputEmail3"
+                    placeholder="..."
+                    className="form-control"
+                    defaultValue={item.pppoe_password}
+                    onChange={handlerChange}
+                  />
+                  <button className="btn btn-primary" type="submit">Create Task</button>
+                </div>
               </div>
-              <div className="col-sm-1"></div>
-              <label
-                htmlFor="inputEmail3"
-                className="col-sm-1 col-form-label text-muted"
-              >
-                Password
-              </label>
-              <div className="col-sm-4">
-                <input
-                  type="text"
-                  name="pppoe_password"
-                  id="inputEmail3"
-                  placeholder="..."
-                  className="form-control"
-                  defaultValue={installation.pppoe_password}
-                  onChange={handlerChange}
-                />
-                <button className="btn btn-primary" type="submit">Create Task</button>
-              </div>
-            </div>
+              </>
+            ))}
           </form>
-
+          <form onSubmit={linkDetailsSubmit}>
           <div className="card bg-light mb-3 mt-3">
             <div className="card-header">
               Link Details
@@ -664,6 +746,7 @@ const TaskDetails = (props) => {
                     name="poc_name"
                     id="customer_name"
                     className="form-control"
+                    onChange={LinkInputChange}
                     defaultValue={data.contract.poc_name}
                   />
                 </div>
@@ -680,6 +763,7 @@ const TaskDetails = (props) => {
                     name="contract_id"
                     id="customer_id"
                     className="form-control"
+                    onChange={LinkInputChange}
                     defaultValue={data.contract.contract_id}
                   />
                 </div>
@@ -694,9 +778,10 @@ const TaskDetails = (props) => {
                   </label>
                   <input
                     type="text"
-                    name="intall_type"
+                    name="installation_type"
                     id="installation_type"
                     className="form-control"
+                    onChange={LinkInputChange}
                     defaultValue={link.installation_type}
                   />
                 </div>
@@ -710,10 +795,11 @@ const TaskDetails = (props) => {
                   </label>
                   <input
                     type="text"
-                    name="additional_details"
+                    name="device"
                     id="device"
                     className="form-control"
-                    defaultValue={link.additional_details}
+                    onChange={LinkInputChange}
+                    defaultValue={link.device}
                   />
                 </div>
               </div>
@@ -730,6 +816,7 @@ const TaskDetails = (props) => {
                     name="access_point"
                     id="access_point"
                     className="form-control"
+                    onChange={LinkInputChange}
                     defaultValue={link.access_point}
                   />
                 </div>
@@ -746,6 +833,7 @@ const TaskDetails = (props) => {
                     name="signal"
                     id="signal"
                     className="form-control"
+                    onChange={LinkInputChange}
                     defaultValue={link.signal}
                   />
                 </div>
@@ -763,6 +851,7 @@ const TaskDetails = (props) => {
                     name="ccq"
                     id="ccq"
                     className="form-control"
+                    onChange={LinkInputChange}
                     defaultValue={link.ccq}
                   />
                 </div>
@@ -779,6 +868,7 @@ const TaskDetails = (props) => {
                     name="cable"
                     id="cable"
                     className="form-control"
+                    onChange={LinkInputChange}
                     defaultValue={link.cable}
                   />
                 </div>
@@ -796,6 +886,7 @@ const TaskDetails = (props) => {
                     name="connector"
                     id="connector"
                     className="form-control"
+                    onChange={LinkInputChange}
                     defaultValue={link.connector}
                   />
                 </div>
@@ -812,6 +903,7 @@ const TaskDetails = (props) => {
                     name="payment"
                     id="payment"
                     className="form-control"
+                    onChange={LinkInputChange}
                     defaultValue={link.payment}
                   />
                 </div>
@@ -829,6 +921,7 @@ const TaskDetails = (props) => {
                     name="bill_number"
                     id="bill_number"
                     className="form-control"
+                    onChange={LinkInputChange}
                     value={link.bill_number}
                   />
                 </div>
@@ -842,9 +935,10 @@ const TaskDetails = (props) => {
                   </label>
                   <input
                     type="date"
-                    name="install_date"
+                    name="installation_date"
                     id="installation_date"
                     className="form-control"
+                    onChange={LinkInputChange}
                   // defaultValue={link.installation_date.slice(0,10)}
                   />
                 </div>
@@ -892,14 +986,18 @@ const TaskDetails = (props) => {
                         placeholder="Leave a description here"
                         id="floatingTextarea"
                         rows="6"
+                        onChange={LinkInputChange}
+                        name="additional_details"
                         defaultValue={link.additional_details}
                       ></textarea>
+                      <button className="btn btn-primary" type="submit">Create Task</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          </form>
           <div className="row">
             <div className="col-4">
               Installation confirmed
@@ -934,7 +1032,6 @@ const TaskDetails = (props) => {
         <LogMessage />
       </div>
     </div>
-
   );
 
 };

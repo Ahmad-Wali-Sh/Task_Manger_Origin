@@ -38,7 +38,7 @@ export class MainDetails extends Component {
                 </a> */}
                 <Link
                   className="text-decoration-none"
-                  to='/details'
+                  to={items.project.name == "Installation" ? '/details' : items.project.name == "Troubleshoot" ? "/troubleshoot" : ""}
                   state={{ data: items }}
                 >
                   <div className="cardTitleText bold">{items.title}</div>

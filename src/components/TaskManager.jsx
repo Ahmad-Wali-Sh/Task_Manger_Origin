@@ -114,6 +114,13 @@ export default function TaskManager(props) {
   // const TroubleArray = <MainDetails data={contenter} />
   console.log(contenter)
 
+
+  console.log(InstallArray)
+  console.log(OnlineArray.length)
+  console.log(ChangeArray.length)
+  console.log(TroubleArray.length)
+  
+  
   React.useEffect(() => {
     axios.get(TASK_URL, {
       headers: {
@@ -189,7 +196,7 @@ export default function TaskManager(props) {
     description: "",
     stage: 1,
     contract: 1,
-    tag: 1
+    tag: 1,
   })
 
 
@@ -252,6 +259,21 @@ export default function TaskManager(props) {
     }
   }
 
+  
+
+  function submitData() {
+    if(form.project == 1) {
+      // Create Task
+      // Create Link Details
+      // Create Installation
+    }
+    else if(form.project == 2) {
+      // Create Task
+      // Create Link Details
+      // Create Check List
+      // Create Troubleshoot
+    }
+  }
 
 
 
@@ -637,7 +659,7 @@ export default function TaskManager(props) {
                                 <button className="btn btn-primary" type="submit">Create Task</button>
                               </div>
                             </form>
-                            {projectArray == "Installation" && (
+                            {/* {projectArray == "Installation" && (
                               <GeneralDetails
                                 contract_no={contract.contract_no}
                                 full_name={contract.full_name}
@@ -670,7 +692,7 @@ export default function TaskManager(props) {
 
                             {/* LOG NOTE AND MESSAGE */}
                             <LogMessage />
-                            {/* END LOG NOTE AND MESSAGE */}
+                           {/* END LOG NOTE AND MESSAGE */}
 
                           </div>
                           <div
@@ -691,8 +713,8 @@ export default function TaskManager(props) {
                                 alt="avatar"
                                 className="avatar"
                               /> */}
-                              <img
-                                src="../../images/avatar1.jpeg"
+                                  <img
+                                src="/dist/img/avatar1.jpeg"
                                 alt="avatar"
                                 className="avatar"
                               />
@@ -740,13 +762,10 @@ export default function TaskManager(props) {
                                   ))}
                                 </ul>
                               </div>
-                              <button className="btn btn-primary" type="submit">submit</button>
                             </form>
                           </div>
                         </div>
                       </div>
-
-
                     </div>
                   </div>
                 </div>
@@ -757,39 +776,37 @@ export default function TaskManager(props) {
               {/* {InstallArray.includes(true) && <Details title="Installation" className="spacer">
                 {InstallArray}
               </Details>} */}
-
-              {InstallArray == null ? "" : <Details title="Installation" className="spacer">
+              <Details title="Installation" className="spacer">
                 {InstallArray}
               </Details>
-              }
 
-              {TroubleArray !== null ? "" : <Details title="Troubleshoot" className="spacer">
+              <Details title="Troubleshoot" className="spacer">
                 {TroubleArray}
+
               </Details>
-              }
 
               {/* {TroubleArray.includes(true) && <Details title="Troubleshoot" className="spacer">
                 {TroubleArray} 
               </Details>} */}
 
-              {OnlineArray == true ? <Details title="Online Support" className="spacer">
+               <Details title="Online Support" className="spacer">
                 {OnlineArray}
-              </Details> : ""
-              }
+              </Details>
+
               {/* 
               {OnlineArray.length > 0 && <Details title="Online Support" className="spacer">
                 {OnlineArray}
               </Details>} */}
 
-              {ChangeArray == true ? <Details title="Change Location" className="spacer">
+              <Details title="Change Location" className="spacer">
                 {ChangeArray}
-              </Details> : ""
-              }
+              </Details>
+
 
               {/* {ChangeArray.length > 0 && <Details title="Change Location" className="spacer">
                 {ChangeArray}
             </Details>} */}
-            </div> 
+            </div>
 
 
           </div>
