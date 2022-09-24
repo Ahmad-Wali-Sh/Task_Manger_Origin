@@ -1,9 +1,9 @@
 import React from "react"
-import TaskManager from "./TaskManager"
+import TaskManager from "./pages/LandingPage/TaskManager"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import TaskEdit from "./subcomponents/TaskEdit";
-import TaskDetails from "./subcomponents/TaskDetails"
-import TroubleshootDetails from "./subcomponents/TroubleshootDetails"
+import TaskDetails from "./pages/Installation/TaskDetails"
+import TroubleshootDetails from "./pages/Troubleshoot/TroubleshootDetails"
+import OnlineSupportDetails from "./pages/OnlineSupport/OnlineSupportDetails";
 
 export default function App() {
     return (
@@ -13,6 +13,7 @@ export default function App() {
             <Route path="/" element={<TaskManager />}/>
             <Route path="/details" element={<TaskDetails />}/>
             <Route path="/troubleshoot" element={<TroubleshootDetails />}/>
+            <Route path="/online_support" element={<OnlineSupportDetails />}/>
         </Routes>
         </BrowserRouter>
         

@@ -1,6 +1,6 @@
 import React from "react"
-import Card from "./Card"
-import LogMessage from "./LogMessage"
+// import Card from "./Card"
+import LogMessage from "../../components/LogMessage"
 
 export default function Amendment() {
     return (
@@ -88,7 +88,7 @@ export default function Amendment() {
                         </div>
                     </div>
                 </div>
-                <Card title="Amendment" />
+                {/* <Card title="Amendment" /> */}
             </div>
         </section>
     )

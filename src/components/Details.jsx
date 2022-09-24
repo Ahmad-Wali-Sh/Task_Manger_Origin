@@ -2,7 +2,6 @@
 import { React, Component } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getDetails } from "../TaskManager";
 import { Link } from "react-router-dom";
 
 export class MainDetails extends Component {
@@ -38,7 +37,7 @@ export class MainDetails extends Component {
                 </a> */}
                 <Link
                   className="text-decoration-none"
-                  to={items.project.name == "Installation" ? '/details' : items.project.name == "Troubleshoot" ? "/troubleshoot" : ""}
+                  to={items.project.name == "Installation" ? '/details' : items.project.name == "Troubleshoot" ? "/troubleshoot" : items.project.name == "Online Support" ? "/online_support" : ""}
                   state={{ data: items }}
                 >
                   <div className="cardTitleText bold">{items.title}</div>

@@ -1,5 +1,5 @@
 import React from "react"
-import Card from "./Card"
+// import Card from "./Card"
 
 export default function ChangeLocation() {
     return (
@@ -124,7 +124,7 @@ export default function ChangeLocation() {
                                 </div>
                             </div>
                         </div>
-                        <Card title="Change Location Result" />
+                        {/* <Card title="Change Location Result" /> */}
                         {/* TROUBLESHOOTING CHECKLIST */}
                         <h4 className="mt-3">Checklist</h4>
                         <br />

@@ -1,5 +1,5 @@
 import React from "react"
-import Card from "./Card"
+// import Card from "./Card"
 
 export default function Troubleshoot() {
   return (
@@ -139,7 +139,7 @@ export default function Troubleshoot() {
             </div>
           </div>
           {/* TROUBLESHOOT RESULT */}
-          <Card title="Troubleshoot Result" />
+          {/* <Card title="Troubleshoot Result" /> */}
           {/* TROUBLESHOOTING CHECKLIST */}
         </div>
         <div className="form-check ml-3">

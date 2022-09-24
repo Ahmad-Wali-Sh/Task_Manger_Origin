@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useRef } from "react";
-//import { useContext } from "react";
-//import { useEffect } from "react";
-//import { Link, Routers , Route } from "react-router-dom";
 import axios from "axios";
-import GeneralDetails from "./subcomponents/GeneralDetails";
-import Troubleshoot from "./subcomponents/Troubleshoot";
-import Amendment from "./subcomponents/Amendment";
-import OnlineSupport from "./subcomponents/OnlineSupport";
-import ChangeLocation from "./subcomponents/ChangeLocation";
-import LogMessage from "./subcomponents/LogMessage";
-import { Details, MainDetails } from "./subcomponents/Details";
-import Members from "./subcomponents/Members";
+import Troubleshoot from "../../components/Troubleshoot";
+import Amendment from "../Amendment/Amendment";
+import ChangeLocation from "../ChangeLocation/ChangeLocation";
+import LogMessage from "../../components/LogMessage";
+import { Details, MainDetails } from "../../components/Details";
 import $ from 'jquery'
-// import { isAccordionItemSelected } from "react-bootstrap/esm/AccordionContext";
-// import { GetUrl } from "./services"
 
 export function getDetails(...data) {
   console.log(data)
