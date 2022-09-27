@@ -1,7 +1,6 @@
 import React from "react"
-// import Card from "./Card"
 
-export default function ChangeLocation() {
+export default function ChangeLocatio123n() {
     return (
         <>
             <section>
@@ -124,8 +123,6 @@ export default function ChangeLocation() {
                                 </div>
                             </div>
                         </div>
-                        {/* <Card title="Change Location Result" /> */}
-                        {/* TROUBLESHOOTING CHECKLIST */}
                         <h4 className="mt-3">Checklist</h4>
                         <br />
                         <div className="form-check ml-3">
@@ -195,7 +192,6 @@ export default function ChangeLocation() {
                                 </li>
                             </ul>
                         </div>
-                        {/* END CHECKLIST */}
                     </div>
                 </div>
                 <div className="card-footer">

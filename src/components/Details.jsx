@@ -1,7 +1,6 @@
 // import { data } from "jquery";
+import axios from "axios";
 import { React, Component } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export class MainDetails extends Component {
@@ -14,7 +13,10 @@ export class MainDetails extends Component {
       id: 0,
       project: "",
       contract_no: "",
+      stages: []
     };
+
+    // this.changeState = this.changeState.bind(this)
   }
   updateTask = async (e, { ...tasks }) => {
     e.preventDefault();
@@ -23,26 +25,64 @@ export class MainDetails extends Component {
   };
   componentDidMount() {
     this.setState({ data: this.props.data });
+    axios({
+      url: "http://192.168.60.55:8000/api/taskmanager/stage/",
+      method: 'GET',
+    }).then((e) => {
+      const stages = e.data.results
+      this.setState({stages})
+    })
   }
+
+  changeState = async (e, task, stage) => {
+    e.preventDefault()
+
+    const data = new FormData()
+    data.append('stage', stage)
+
+    try{
+      const response = await axios({
+        url: `http://192.168.60.55:8000/api/taskmanager/task/${task}/`,
+        method: 'PATCH',
+        data: data
+      })
+      console.log(response)
+    }catch(err) {
+      console.log(err)
+    }
+    window.location.replace('/')
+  }
+
+  
 
   render() {
     return (
       <>
         {this.state.data.map((items) => (
-          <div className="cardItem">
-            <div className="row">
-              <div className="col-8">
+          <div className="cardItem ">
+            <div className="row height">
+              <div className="col-8 ">
                 {/* <a href="" className="text-decoration-none" onClick={(e) => this.updateTask(e, {items})} data-bs-toggle="modal" data-bs-target="#addTaskModal_2">
                   <div className="cardTitleText bold">{items.title}</div>
                 </a> */}
                 <Link
                   className="text-decoration-none"
-                  to={items.project.name == "Installation" ? '/details' : items.project.name == "Troubleshoot" ? "/troubleshoot" : items.project.name == "Online Support" ? "/online_support" : ""}
+                  to={
+                    items.project.name == "Installation"
+                      ? "/details"
+                      : items.project.name == "Troubleshoot"
+                      ? "/troubleshoot"
+                      : items.project.name == "Online Support"
+                      ? "/online_support"
+                      : items.project.name == "Change Location"
+                      ? "/change_location"
+                      : ""
+                  }
                   state={{ data: items }}
                 >
-                  <div className="cardTitleText bold">{items.title}</div>
+                  <div className="cardTitleText col-11">{items.title}</div>
                 </Link>
-                <p className="text-muted">
+                <p className="text-muted mt-2">
                   {items.project.name == "Installation"
                     ? items.contract.poc_name
                     : items.contract.contract_no}
@@ -51,18 +91,18 @@ export class MainDetails extends Component {
               <div className="col-4 ttt">
                 <div className="flexing">
                   <div className="image--flex">
-                    {items.assigned.map((item) => (
-                      <img
-                        src={item.avatar}
-                        alt=""
-                        className="avatar"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title={item.name}
-                      />
-                    ))}
+                    {/* {items.user.map((item) => ( */}
+                    <img
+                      src={items.user.avatar}
+                      alt=""
+                      className="avatar--task"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title={items.user.name}
+                    />
+                    {/* ))} */}
                   </div>
-                  <div className="buttons">
+                  <div className="d-flex justify-content-end ">
                     <button className="btn tools iconsize">
                       <i className="fa-solid fa-list-check px-1"></i>
                       2/3
@@ -76,7 +116,7 @@ export class MainDetails extends Component {
                     <div className="dropdown">
                       {/* className="dropdown-toggle" */}
                       <button
-                        className="btn tools"
+                        className="btn mx-3 border-0"
                         type="button"
                         id="dropdown1"
                         data-bs-toggle="dropdown"
@@ -95,6 +135,101 @@ export class MainDetails extends Component {
                             Archive
                           </a>
                         </li>
+                      </ul>
+                    </div>
+                    {/* <div className="dropdown">
+                     
+                      <button
+                        className="btn p-0 m-0"
+                        type="button"
+                        id="dropdown1"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <div style={{width:"12px", height:"12px", backgroundColor: "green", borderRadius: "10rem", padding: "0px", margin:"0px", position: "relative", top:"5px"}}></div>
+              
+                      </button>
+                      <ul className="dropdown-menu" aria-labelledby="dropdown1">
+                        <li>
+                          <a className="dropdown-item text-primary" href="#">
+                            Edit
+                          </a>
+                        </li>
+                        <li>
+                          <a className="dropdown-item text-danger" href="#">
+                            Archive
+                          </a>
+                        </li>
+                      </ul>
+                    </div> */}
+                    {/* <div class="dropdown">
+                      <a
+                       
+                        href="#"
+                        role="button"
+                        id="dropdownMenuLink"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                       <div className="dot bg-success"></div>
+                      </a>
+
+                      <ul
+                        class="dropdown-menu"
+                        aria-labelledby="dropdownMenuLink"
+                      >
+                        
+                        <li>
+                          <a class="dropdown-item" href="#">
+                            Pending...
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#">
+                            In Progress...
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="#">
+                            Done
+                          </a>
+                        </li>
+                      </ul>
+                    </div> */}
+                    <div class="dropdown">
+                      <a
+                       
+                        href="#"
+                        role="button"
+                        id="dropdownMenuLink"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                       <div className={items.stage.name == "New" ? "dot bg-secondary" : items.stage.name == "In-Progress" ? "dot bg-primary" : items.stage.name == "Completed" ? "dot color--success" : "dot bg-dark"}></div>
+                      </a>
+
+                      <ul
+                        class="dropdown-menu"
+                        aria-labelledby="dropdownMenuLink"
+                      >
+                        
+                        {this.state.stages.map(item=> (
+                          <li>
+                          <a class="dropdown-item" name="stage" key={item.id} onClick={(e) => this.changeState(e,items.id, item.id)}>
+                            {item.name}
+                          </a>
+                        </li>
+                        ))}
+                        {/* <li>
+                          <a class="dropdown-item">
+                            In Progress...
+                          </a>
+                        </li>
+                        <li>
+                          <a class="dropdown-item">
+                            Done
+                          </a>
+                        </li> */}
                       </ul>
                     </div>
                   </div>
@@ -120,15 +255,6 @@ export class MainDetails extends Component {
                   </span>
                 </h6>
               </div>
-              {/* <button
-                    type="button"
-                    name="addTask"
-                    className="btn btn-secondary rounded-circle circle-width"
-                    data-bs-toggle="modal"
-                    data-bs-target="#addTaskModal"
-                >
-                    <i className="fa-solid fa-plus "></i>
-                </button> */}
             </div>
 
             <div

@@ -1,89 +1,60 @@
 import React from "react";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import CheckList from "../../../components/CheckList";
+import axios from "axios";
 
-export default function Troubleshoot() {
+const ChangeLocation = (props) => {
   const location = useLocation();
   const data = location.state?.data;
 
-  const [singleTroubleshootTask, setSingleTroubleshootTask] = React.useState(
-    []
-  );
-  const troubleshoot_details = singleTroubleshootTask.map((item) => item.id);
-  const TROUBLE_URL = process.env.REACT_APP_TROUBLE;
+  console.log(data.id)
+
+
+  const CHANGE_URL = process.env.REACT_APP_CHANGE_LOCATION;
+
+  const [ChangeLocationData, setChangeLocation] = React.useState([]);
+  const [ChangeLocationID, setChangeLocationID] = React.useState([]);
 
   useEffect(() => {
-    axios.get(TROUBLE_URL + `?id=${data.id}`).then((res) => {
-      setSingleTroubleshootTask(res.data.results);
+    axios.get(CHANGE_URL + `?id=${data.id}`).then((res) => {
+      setChangeLocation(res.data.results);
+      setChangeLocationID(res.data.results.map((item) => item.id));
       console.log(res.data.count);
     });
   }, []);
 
-
-
-  const [truobleshoot, setTroubleshoot] = React.useState({
+  const [changelocation, setChangelocation] = React.useState({
     address: "",
     contact: "",
-    problem: "",
     service_charge: "",
     description: "",
   });
 
-  console.log(truobleshoot)
-  console.log(singleTroubleshootTask)
-  
-
   let handlerChange = (event) => {
-    setTroubleshoot({
-      ...truobleshoot,
+    setChangelocation({
+      ...changelocation,
       [event.target.name]: event.target.value,
     });
     console.log(event.target.value);
   };
 
-  const updateTrobleshoot = async (e) => {
-    e.preventDefault()
-
-    const data = new FormData()
-
-    Object.keys(truobleshoot).map((key) => {
-        data.append(truobleshoot[key] != '' && key, truobleshoot[key] != '' && truobleshoot[key]);
-      })
-
-    try {
-        const response = await axios({
-          method: 'PATCH',
-          url: `http://192.168.60.55:8000/api/taskmanager/troubleshoot/${troubleshoot_details}/`,
-          data: data,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        console.log(response);
-      } catch (err) {
-        console.log(err.message);
-      }
-  }
-
-  function TroubleshootSubmit(e) {
+  const updateChangeLocation = async (e) => {
     e.preventDefault();
-    const TroubleshootForm = new FormData();
-    TroubleshootForm.append("address", truobleshoot.address);
-    TroubleshootForm.append("contact", truobleshoot.contact);
-    TroubleshootForm.append("problem", truobleshoot.problem);
-    TroubleshootForm.append("service_charge", truobleshoot.service_charge);
-    TroubleshootForm.append("description", truobleshoot.description);
-    TroubleshootForm.append("link_details", 4);
-    TroubleshootForm.append("checklist", 1);
-    TroubleshootForm.append("task", data.id);
+
+    const data = new FormData();
+
+    Object.keys(changelocation).map((key) => {
+      data.append(
+        changelocation[key] != "" && key,
+        changelocation[key] != "" && changelocation[key]
+      );
+    });
 
     try {
-      const response = axios({
-        method: "POST",
-        url: `http://192.168.60.55:8000/api/taskmanager/troubleshoot/`,
-        data: TroubleshootForm,
+      const response = await axios({
+        method: "PATCH",
+        url: `http://192.168.60.55:8000/api/taskmanager/changeLocation/${ChangeLocationID}/`,
+        data: data,
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -92,13 +63,35 @@ export default function Troubleshoot() {
     } catch (err) {
       console.log(err.message);
     }
+  };
 
+  const ChangeLocationSubmit = async (e) => {
+    e.preventDefault();
+    const ChangeLocationForm = new FormData();
+    ChangeLocationForm.append("address", changelocation.address);
+    ChangeLocationForm.append("contact", changelocation.contact);
+    ChangeLocationForm.append("service_charge", changelocation.service_charge);
+    ChangeLocationForm.append("description", changelocation.description);
+    ChangeLocationForm.append("task", data.id);
 
-  }
+    try {
+      const response = await axios({
+        method: "POST",
+        url: `http://192.168.60.55:8000/api/taskmanager/changeLocation/`,
+        data: ChangeLocationForm,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
-      {singleTroubleshootTask == false && (
+      {ChangeLocationData == false && (
         <div className="mb-2 mt-2">
           <button
             type="button"
@@ -111,7 +104,7 @@ export default function Troubleshoot() {
           </button>
         </div>
       )}
-      
+
       <div
         class="modal fade"
         id="exampleModal"
@@ -123,7 +116,7 @@ export default function Troubleshoot() {
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">
-                Troubleshoot Settings
+                Change Location Settings
               </h5>
               <button
                 type="button"
@@ -133,7 +126,7 @@ export default function Troubleshoot() {
               ></button>
             </div>
             <div class="modal-body">
-              <form onSubmit={TroubleshootSubmit}>
+              <form onSubmit={ChangeLocationSubmit}>
                 <div className="row mt-2">
                   <label
                     htmlFor="troubleshoot_address"
@@ -186,24 +179,7 @@ export default function Troubleshoot() {
                     />
                   </div>
                 </div>
-                <div className="row mt-2">
-                  <label
-                    htmlFor="troubleshoot_problem"
-                    className="col-sm-2 col-form-label text-muted"
-                  >
-                    Problem
-                  </label>
-                  <div className="col-sm-10">
-                    <input
-                      type="text"
-                      name="problem"
-                      id="troubleshoot_problem"
-                      placeholder="..."
-                      className="form-control"
-                      onChange={handlerChange}
-                    />
-                  </div>
-                </div>
+
                 <div className="row mt-5" id="pills-tab" role="tablist">
                   <div className="col-12">
                     <nav>
@@ -251,11 +227,15 @@ export default function Troubleshoot() {
           </div>
         </div>
       </div>
-      {singleTroubleshootTask.map((item) => (
+
+
+
+
+      {ChangeLocationData.map((item) => (
         <>
-          <h3>Troubleshoot</h3>
+          <h3>Change Location</h3>
           <div className="card text-dark bg-light mb-3">
-            <form onSubmit={updateTrobleshoot}>
+            <form onSubmit={updateChangeLocation}>
               <div className="card-header">Task details</div>
               <div className="card-body">
                 <div className="row mt-1">
@@ -332,25 +312,6 @@ export default function Troubleshoot() {
                     />
                   </div>
                 </div>
-                <div className="row mt-2">
-                  <label
-                    htmlFor="troubleshoot_problem"
-                    className="col-sm-2 col-form-label text-muted"
-                  >
-                    Problem
-                  </label>
-                  <div className="col-sm-10">
-                    <input
-                      type="text"
-                      name="problem"
-                      id="troubleshoot_problem"
-                      placeholder="..."
-                      className="form-control"
-                      onChange={handlerChange}
-                      defaultValue={item.problem}
-                    />
-                  </div>
-                </div>
                 <div className="row mt-5" id="pills-tab" role="tablist">
                   <div className="col-12">
                     <nav>
@@ -391,15 +352,21 @@ export default function Troubleshoot() {
                 </div>
               </div>
               <div className="card-footer">
-                <button type="submit" className="btn btn-success" >
+                <button type="submit" className="btn btn-success">
                   Submit
                 </button>
               </div>
             </form>
           </div>
-          
         </>
       ))}
+
+
+
+
+
     </>
   );
-}
+};
+
+export default ChangeLocation;

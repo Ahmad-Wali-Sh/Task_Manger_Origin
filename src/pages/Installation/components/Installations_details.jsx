@@ -12,13 +12,13 @@ const Installations_details = (props) => {
   const INSTALL_URL = process.env.REACT_APP_INSTALL;
 
   const [installation, setInstallation] = React.useState([]);
-  const [taskID, setTaskID] = useState()
-  const [count, setCount] = useState()
+  const [taskID, setTaskID] = useState();
+  const [count, setCount] = useState();
   React.useEffect(() => {
     axios.get(INSTALL_URL + `?id=${props.id}`).then((res) => {
       setInstallation(res.data.results);
-      setCount(res.data.count)
-      setTaskID(res.data.results.map(item => item.id))
+      setCount(res.data.count);
+      setTaskID(res.data.results.map((item) => item.id));
       console.log(res.data.results);
     });
   }, []);
@@ -34,14 +34,17 @@ const Installations_details = (props) => {
     e.preventDefault();
     const data = new FormData();
 
-      Object.keys(settings).map((key) => {
-        data.append(settings[key] != '' && key, settings[key] != '' && settings[key]);
-      })
-      
-      console.log(count)
+    Object.keys(settings).map((key) => {
+      data.append(
+        settings[key] != "" && key,
+        settings[key] != "" && settings[key]
+      );
+    });
+
+    console.log(count);
     try {
       const response = await axios({
-        method: count > 0 ? 'PATCH' : 'POST' ,
+        method: count > 0 ? "PATCH" : "POST",
         url: count > 0 ? INSTALL_URL + `${taskID}/` : INSTALL_URL,
         data: data,
         headers: {
@@ -51,33 +54,67 @@ const Installations_details = (props) => {
     } catch (err) {
       console.log(err.message);
     }
-
-    
   };
-
-
-
-
 
   return (
     <div>
+      <hr />
       <div className="mb-2 mt-2">
-      {installation == false && (
-        <button
-        type="button"
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
-        data-bs-whatever="@mdo"
-      >
-        Add PPPoE Settings
-      </button>
-      )}</div>
+        {installation == false && (
+          <button
+            type="button"
+            class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#exampleModal"
+            data-bs-whatever="@mdo"
+          >
+            Add PPPoE Settings
+          </button>
+        )}
+      </div>
       <form onSubmit={handleSubmit}>
         {installation.map((item) => (
           <>
             <h3 className="mt-3">PPPoE Settings</h3>
-            <div className="row mt-1" id="pills-tab" role="tablist">
+
+            <div className="row mt-1">
+              <label
+                htmlFor="inputEmail3"
+                className="col-sm-1 col-form-label text-muted"
+              >
+                User
+              </label>
+              <div className="col-sm-4">
+                <input
+                  type="text"
+                  name="pppoe_user"
+                  id="inputEmail3"
+                  placeholder="..."
+                  className="form-control"
+                  onChange={handleChange}
+                  defaultValue={item.pppoe_user}
+                />
+              </div>
+              <div className="col-sm-1"></div>
+              <label
+                htmlFor="inputEmail3"
+                className="col-sm-2 col-form-label text-muted"
+              >
+                Password
+              </label>
+              <div className="col-sm-4">
+                <input
+                  type="text"
+                  name="pppoe_password"
+                  id="inputEmail3"
+                  placeholder="..."
+                  className="form-control"
+                  onChange={handleChange}
+                  defaultValue={item.pppoe_password}
+                />
+              </div>
+            </div>
+            <div className="row mt-3" id="pills-tab" role="tablist">
               <div className="col-12">
                 <nav>
                   <div className="nav nav-tabs" id="nav-tab" role="tablist">
@@ -115,46 +152,10 @@ const Installations_details = (props) => {
               onChange={handleChange}
               defaultValue={item.description}
             ></textarea>
-
-            <div className="row mt-1">
-              <label
-                htmlFor="inputEmail3"
-                className="col-sm-1 col-form-label text-muted"
-              >
-                User
-              </label>
-              <div className="col-sm-4">
-                <input
-                  type="text"
-                  name="pppoe_user"
-                  id="inputEmail3"
-                  placeholder="..."
-                  className="form-control"
-                  onChange={handleChange}
-                  defaultValue={item.pppoe_user}
-                />
-              </div>
-              <div className="col-sm-1"></div>
-              <label
-                htmlFor="inputEmail3"
-                className="col-sm-1 col-form-label text-muted"
-              >
-                Password
-              </label>
-              <div className="col-sm-4">
-                <input
-                  type="text"
-                  name="pppoe_password"
-                  id="inputEmail3"
-                  placeholder="..."
-                  className="form-control"
-                  onChange={handleChange}
-                  defaultValue={item.pppoe_password}
-                />
-                <button className="btn btn-primary" type="submit">
-                  Create Task
-                </button>
-              </div>
+            <div className="modal-footer mt-3">
+              <button className="btn btn-success" type="submit">
+                Submit
+              </button>
             </div>
           </>
         ))}

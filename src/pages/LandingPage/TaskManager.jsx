@@ -3,23 +3,15 @@ import { useRef } from "react";
 import axios from "axios";
 import Troubleshoot from "../../components/Troubleshoot";
 import Amendment from "../Amendment/Amendment";
-import ChangeLocation from "../ChangeLocation/ChangeLocation";
+import ChangeLocation from "../ChangeLocation/ChangeLocationDetails";
 import LogMessage from "../../components/LogMessage";
 import { Details, MainDetails } from "../../components/Details";
-import $ from 'jquery'
 
 export function getDetails(...data) {
-  console.log(data)
+  console.log(data);
 }
 
 export default function TaskManager(props) {
-
-  // $(function () {
-  //   $('[data-toggle="tooltip"]').tooltip()
-  // })
-
-  // console.log(props);
-
   let contractState = {
     contract_no: "",
     full_name: "",
@@ -37,9 +29,7 @@ export default function TaskManager(props) {
     switch: false,
   };
 
-
   const url = process.env.REACT_APP_CONTRACT;
-  // const token = useContext(Context);
   const [contract, setContract] = useState(contractState);
   const [project, setProject] = useState(taskProjectState);
   let [switchState, setSwitchState] = useState(switchInitialState);
@@ -51,134 +41,137 @@ export default function TaskManager(props) {
     setProject({ selectedProject: event.target.value });
     console.log(event.target.value);
   }
-  //   const TASK_URL = process.env.REACT_APP_TASK
-  // const token1 = '8baabc24a9c1a2f3c26d4b7775d45c12f6e4d67c'
-
-  //   axios.get(TASK_URL, {
-  //     headers: {
-  //         Authorization: token1
-  //     }
-  // }).then (res => {
-  //     console.log(res.data.results)
-  // })
-  // GetUrl();
-
 
   function handleSwitch(e) {
-    // console.log(switchState)
-    // setSwitchState({
-    //   ...switchState,
-    //   switch: !e.target.value
-    // })
-    // console.log({switchState})
     let isChecked = e.target.checked;
     console.log(isChecked);
   }
 
-  const [find, setFind] = useState([])
-  const token = "ABCdeadjfai"
+  const [find, setFind] = useState([]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await axios.get(
-        url + `?contract-no=${contractNoRef.current.value}`,
+        url + `?contract-no=${contractNoRef.current.value}`
       );
       console.log(res.data.results);
-      setFind(res.data.results[0])
+      setFind(res.data.results[0]);
     } catch (err) {
       console.log(err);
     }
   };
 
+  const TASK_URL = "http://192.168.60.55:8000/api/taskmanager/task/";
+  const token1 = "8baabc24a9c1a2f3c26d4b7775d45c12f6e4d67c";
 
-  const TASK_URL = "http://192.168.60.55:8000/api/taskmanager/task/"
-  const token1 = '8baabc24a9c1a2f3c26d4b7775d45c12f6e4d67c'
-
-  const [contenter, setContenter] = React.useState([])
+  const [contenter, setContenter] = React.useState([]);
 
   // console.log(contenter)
 
-
-  const TroubleArray = contenter.map(item => item.project.name == "Troubleshoot" && <MainDetails data={[item]} />)
-  const OnlineArray = contenter.map(item => item.project.name == "Online Support" && <MainDetails data={[item]} />)
-  const InstallArray = contenter.map(item => item.project.name == "Installation" && <MainDetails data={[item]} />)
-  const ChangeArray = contenter.map(item => item.project.name == "Change Location" && <MainDetails data={[item]} />)
+  const TroubleArray = contenter.map(
+    (item) =>
+      item.project.name == "Troubleshoot" && (
+        <div className="col-6">
+          <MainDetails data={[item]} />
+        </div>
+      )
+  );
+  const OnlineArray = contenter.map(
+    (item) =>
+      item.project.name == "Online Support" && (
+        <div className="col-6">
+          <MainDetails data={[item]} />
+        </div>
+      )
+  );
+  const InstallArray = contenter.map(
+    (item) =>
+      item.project.name == "Installation" && (
+        <div className="col-6">
+          <MainDetails data={[item]} />
+        </div>
+      )
+  );
+  const ChangeArray = contenter.map(
+    (item) =>
+      item.project.name == "Change Location" && (
+        <div className="col-6">
+          <MainDetails data={[item]} />
+        </div>
+      )
+  );
   // const TroubleArray = <MainDetails data={contenter} />
-  console.log(contenter)
-
-
-  console.log(InstallArray)
-  console.log(OnlineArray.length)
-  console.log(ChangeArray.length)
-  console.log(TroubleArray.length)
-  
-  
-  React.useEffect(() => {
-    axios.get(TASK_URL, {
-      headers: {
-        Authorization: token1
-      }
-    }).then(res => {
-      setContenter(res.data.results)
-    })
-
-
-  }, [])
-
-  const [stage, setStage] = useState([])
-  const [projecter, setProjecter] = useState([])
-  const [tag, setTag] = useState([])
-  const [member, setMember] = useState([])
-
-  const STAGE_URL = process.env.REACT_APP_STAGE
-  const PROJECT_URL = process.env.REACT_APP_PROJECT
-  const TAG_URL = process.env.REACT_APP_TAG
-  const MEMBER_URL = process.env.REACT_APP_MEMBERS
+  console.log(contenter);
 
   React.useEffect(() => {
-    axios.get(STAGE_URL, {
-      headers: {
-        Authorization: token1
-      }
-    }).then(res => {
-      setStage(res.data.results)
-    })
-  }, [])
+    axios
+      .get(TASK_URL, {
+        headers: {
+          Authorization: token1,
+        },
+      })
+      .then((res) => {
+        setContenter(res.data.results);
+      });
+  }, []);
 
+  const [stage, setStage] = useState([]);
+  const [projecter, setProjecter] = useState([]);
+  const [tag, setTag] = useState([]);
+  const [member, setMember] = useState([]);
 
-  React.useEffect(() => {
-    axios.get(MEMBER_URL, {
-      headers: {
-        Authorization: token1
-      }
-    }).then(res => {
-      setMember(res.data.results)
-    })
-  }, [])
-
-
-
-  React.useEffect(() => {
-    axios.get(PROJECT_URL, {
-      headers: {
-        Authorization: token1
-      }
-    }).then(res => {
-      setProjecter(res.data.results)
-    })
-  }, [])
-
+  const STAGE_URL = process.env.REACT_APP_STAGE;
+  const PROJECT_URL = process.env.REACT_APP_PROJECT;
+  const TAG_URL = process.env.REACT_APP_TAG;
+  const MEMBER_URL = process.env.REACT_APP_MEMBERS;
 
   React.useEffect(() => {
-    axios.get(TAG_URL, {
-      headers: {
-        Authorization: token1
-      }
-    }).then(res => {
-      setTag(res.data.results)
-    })
-  }, [])
+    axios
+      .get(STAGE_URL, {
+        headers: {
+          Authorization: token1,
+        },
+      })
+      .then((res) => {
+        setStage(res.data.results);
+      });
+  }, []);
 
+  React.useEffect(() => {
+    axios
+      .get(MEMBER_URL, {
+        headers: {
+          Authorization: token1,
+        },
+      })
+      .then((res) => {
+        setMember(res.data.results);
+      });
+  }, []);
+
+  React.useEffect(() => {
+    axios
+      .get(PROJECT_URL, {
+        headers: {
+          Authorization: token1,
+        },
+      })
+      .then((res) => {
+        setProjecter(res.data.results);
+      });
+  }, []);
+
+  React.useEffect(() => {
+    axios
+      .get(TAG_URL, {
+        headers: {
+          Authorization: token1,
+        },
+      })
+      .then((res) => {
+        setTag(res.data.results);
+      });
+  }, []);
 
   let [form, setForm] = React.useState({
     title: "",
@@ -189,53 +182,50 @@ export default function TaskManager(props) {
     stage: 1,
     contract: 1,
     tag: 1,
-  })
+  });
 
-
-  console.log(form)
-
+  console.log(form);
 
   let handlerChange = (event) => {
-    if (event.target.name !== 'assigned') {
+    if (event.target.name !== "assigned") {
       setForm({
         ...form,
-        [event.target.name]: event.target.value
-      })
+        [event.target.name]: event.target.value,
+      });
     } else {
       if (event.target.checked) {
-
-        setForm(prevState => ({
+        setForm((prevState) => ({
           ...form,
-          assigned: [...prevState.assigned, event.target.value]
+          assigned: [...prevState.assigned, event.target.value],
         }));
-
       }
       if (!event.target.checked) {
-        setForm(prevState => ({
+        setForm((prevState) => ({
           ...form,
-          assigned: prevState.assigned.filter(assign => assign !== event.target.value)
-        }))
+          assigned: prevState.assigned.filter(
+            (assign) => assign !== event.target.value
+          ),
+        }));
       }
     }
-  }
+  };
 
+  document.addEventListener("touchstart", function(){}, true);
   // function avatarHandler (event) {
 
   // }
 
-
-
   const createTask = async (event) => {
-    event.preventDefault()
-    const loginForm = new FormData()
-    loginForm.append("title", form.title)
-    loginForm.append("contract", find.id)
-    form.assigned.map(item => loginForm.append('assigned', JSON.parse(item)))
-    loginForm.append("deadline", new Date(form.deadline).toISOString())
-    loginForm.append("project", form.project)
-    loginForm.append("stage", 1)
-    loginForm.append("tag", form.tag)
-    loginForm.append("description", form.description)
+    event.preventDefault();
+    const loginForm = new FormData();
+    loginForm.append("title", form.title);
+    loginForm.append("contract", find.id);
+    form.assigned.map((item) => loginForm.append("assigned", JSON.parse(item)));
+    loginForm.append("deadline", new Date(form.deadline).toISOString());
+    loginForm.append("project", form.project);
+    loginForm.append("stage", 1);
+    loginForm.append("tag", form.tag);
+    loginForm.append("description", form.description);
     // console.log(loginForm)
 
     try {
@@ -243,32 +233,26 @@ export default function TaskManager(props) {
         method: "post",
         url: TASK_URL,
         data: loginForm,
-        header: { "Content-Type": "multipart/form-data" }
-      })
-      console.log(respone)
+        header: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(respone);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
-
-  
+  };
 
   function submitData() {
-    if(form.project == 1) {
+    if (form.project == 1) {
       // Create Task
       // Create Link Details
       // Create Installation
-    }
-    else if(form.project == 2) {
+    } else if (form.project == 2) {
       // Create Task
       // Create Link Details
       // Create Check List
       // Create Troubleshoot
     }
   }
-
-
-
 
   // function getList() {
   //     return fetch('http://192.168.60.55:8000/api/taskmanager/task/')
@@ -286,10 +270,9 @@ export default function TaskManager(props) {
   //         })
   //         return () => mounted = false;
   // }, [])
-  const projectArray = projecter.map(item => projecter.name)
+  const projectArray = projecter.map((item) => projecter.name);
 
-  const [content, setContent] = useState([])
-
+  const [content, setContent] = useState([]);
 
   // useEffect(() => {
   //   fetch('http://192.168.60.55:8000/api/taskmanager/task/')
@@ -309,6 +292,38 @@ export default function TaskManager(props) {
   //   };
   //   renderProjectForm();
   // }, []);
+  const [search, setSearch] = React.useState({
+    search: "",
+  })
+
+  function SearchHandle (e) {
+    setSearch(
+     { [e.target.name] : e.target.value}
+    )
+  }
+  
+  const SearchSubmit = async (e) => {
+    e.preventDefault()
+    const SearchForm = new FormData();
+    SearchForm.append("search", search.search)
+
+   
+      axios
+        .get(TASK_URL + `?contract=${search.search}`, {
+          headers: {
+            Authorization: token1,
+          },
+        })
+        .then((res) => {
+          setContenter(res.data.results);
+        });
+    };
+
+
+  
+
+
+  console.log(search)
 
   return (
     <div>
@@ -319,9 +334,7 @@ export default function TaskManager(props) {
               <div className="col-sm-6">{/* <h1>Device Form</h1> */}</div>
               <div className="col-sm-6">
                 <ol className="breadcrumb float-sm-right">
-                  <li className="breadcrumb-item">
-                  </li>
-
+                  <li className="breadcrumb-item"></li>
                 </ol>
               </div>
             </div>
@@ -331,9 +344,33 @@ export default function TaskManager(props) {
         <section className="content">
           <div className="container">
             <div className="row mb-5">
+              
               <div className="col-10 offset-md-1">
+              <form
+                className="search-container"
+                action="//llamaswill.tumblr.com/search"
+                onSubmit={SearchSubmit}
+              >
+                <input
+                  id="search-box"
+                  type="text"
+                  className="search-box"
+                  name="search"
+                  onChange={SearchHandle}
+                />
+                <label for="search-box">
+                  <span className="search-icon">
+                   
+                  <i class="fa-regular fa-magnifying-glass"></i>
+                  
+                  </span>
+                </label>
+                <input type="submit" id="search-submit" />
+              </form>
                 <div className="flexer">
-                  {content.map(item => <h1>{content.results.title}</h1>)}
+                  {content.map((item) => (
+                    <h1>{content.results.title}</h1>
+                  ))}
                   <p className="float-left tasktitle">Tasks&nbsp;</p>
                   <button
                     type="button"
@@ -357,7 +394,10 @@ export default function TaskManager(props) {
                   <div className="modal-dialog modal-xl" role="document">
                     <div className="modal-content">
                       <div className="modal-header bg-primary">
-                        <h5 className="modal-title cl-light text-light" id="addTaskModalTitle">
+                        <h5
+                          className="modal-title cl-light text-light"
+                          id="addTaskModalTitle"
+                        >
                           New Task
                         </h5>
                         <button
@@ -366,9 +406,7 @@ export default function TaskManager(props) {
                           data-bs-dismiss="modal"
                           aria-label="Close"
                         >
-
                           <i className="fa-duotone fa-circle-xmark close-icon"></i>
-
                         </button>
                       </div>
                       <div className="modal-body">
@@ -415,22 +453,6 @@ export default function TaskManager(props) {
                             tabIndex="2"
                           >
                             <form onSubmit={handleSubmit}>
-                              {/* <div className="input-group flex-nowrap mt-3">
-                                <span
-                                  className="input-group-text"
-                                  id="addon-wrapping"
-                                >
-                                  <i className="fa-solid fa-magnifying-glass"></i>
-                                </span>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Find customer"
-                                  aria-label="Username"
-                                  aria-describedby="addon-wrapping"
-                                  ref={contractNoRef}
-                                />
-                              </div> */}
                               <div className="input-group mb-3 mt-3">
                                 <input
                                   type="text"
@@ -439,7 +461,6 @@ export default function TaskManager(props) {
                                   aria-label="Recipient's username"
                                   aria-describedby="button-addon2"
                                   ref={contractNoRef}
-
                                 />
                                 <button
                                   className="btn btn-outline-secondary"
@@ -453,7 +474,6 @@ export default function TaskManager(props) {
 
                             <form onSubmit={createTask}>
                               <div className="row">
-                                {/* <div className="col-2 col-sm-1"></div> */}
                                 <div className="col-1 col-sm-1">
                                   <label
                                     htmlFor="project"
@@ -477,7 +497,6 @@ export default function TaskManager(props) {
                                       aria-label="Username"
                                       aria-describedby="basic-addon1"
                                       onChange={handlerChange}
-
                                     />
                                   </div>
                                 </div>
@@ -493,7 +512,6 @@ export default function TaskManager(props) {
                                     </label>
                                   </div>
 
-
                                   <div className="col-3 col-sm-4">
                                     <select
                                       className="form-select"
@@ -502,16 +520,14 @@ export default function TaskManager(props) {
                                       ref={projectRef}
                                       name="project"
                                       onChange={handlerChange}
-
                                     >
-                                      <option selected>
-                                        Select
-                                      </option>
-                                      {projecter.map(item => <option value={item.id}>
-                                        {item.name}
-                                      </option>)}
+                                      <option selected>Select</option>
+                                      {projecter.map((item) => (
+                                        <option value={item.id}>
+                                          {item.name}
+                                        </option>
+                                      ))}
                                     </select>
-
                                   </div>
 
                                   <div className="col-1"></div>
@@ -587,12 +603,12 @@ export default function TaskManager(props) {
                                         name="tag"
                                         onChange={handlerChange}
                                       >
-                                        <option selected>
-                                          Select
-                                        </option>
-                                        {tag.map(item => <option value={item.id}>{item.name}</option>)}
-
-
+                                        <option selected>Select</option>
+                                        {tag.map((item) => (
+                                          <option value={item.id}>
+                                            {item.name}
+                                          </option>
+                                        ))}
                                       </select>
                                     </div>
                                   </div>
@@ -648,7 +664,12 @@ export default function TaskManager(props) {
                               </div>
                               <div className="modal-footer">
                                 {/* <input type="submit" className="btn btn-primary" value="Create Task" /> */}
-                                <button className="btn btn-primary" type="submit">Create Task</button>
+                                <button
+                                  className="btn btn-primary"
+                                  type="submit"
+                                >
+                                  Create Task
+                                </button>
                               </div>
                             </form>
                             {/* {projectArray == "Installation" && (
@@ -669,11 +690,11 @@ export default function TaskManager(props) {
 
                             {/* TROUBLESHOOT SECTION */}
                             {project.selectedProject == "troubleshoot" && (
-                              <Troubleshoot />)}
+                              <Troubleshoot />
+                            )}
                             {project.selectedProject == "changeLocation" && (
                               <ChangeLocation />
                             )}
-
 
                             {/* AMENDMENT */}
                             {project.selectedProject == "amendment" && (
@@ -681,11 +702,9 @@ export default function TaskManager(props) {
                             )}
                             {/* END AMENDMENT */}
 
-
                             {/* LOG NOTE AND MESSAGE */}
                             <LogMessage />
-                           {/* END LOG NOTE AND MESSAGE */}
-
+                            {/* END LOG NOTE AND MESSAGE */}
                           </div>
                           <div
                             class="tab-pane fade"
@@ -705,11 +724,11 @@ export default function TaskManager(props) {
                                 alt="avatar"
                                 className="avatar"
                               /> */}
-                                  <img
+                              {/* <img
                                 src="/dist/img/avatar1.jpeg"
                                 alt="avatar"
                                 className="avatar"
-                              />
+                              /> */}
                             </div>
                             <div className="col-6 m-auto">
                               <div className="input-group flex-nowrap">
@@ -731,7 +750,7 @@ export default function TaskManager(props) {
                             <form onSubmit={createTask}>
                               <div className="col-5 membersbox">
                                 <ul>
-                                  {member.map(item => (
+                                  {member.map((item) => (
                                     <li className="d-flex justify-content-between padd">
                                       <div className="list-item">
                                         <img
@@ -764,25 +783,23 @@ export default function TaskManager(props) {
               </div>
             </div>
             <div className="details">
-
               {/* {InstallArray.includes(true) && <Details title="Installation" className="spacer">
                 {InstallArray}
               </Details>} */}
               <Details title="Installation" className="spacer">
-                {InstallArray}
+                <div className="row">{InstallArray}</div>
               </Details>
 
               <Details title="Troubleshoot" className="spacer">
-                {TroubleArray}
-
+                <div className="row">{TroubleArray}</div>
               </Details>
 
               {/* {TroubleArray.includes(true) && <Details title="Troubleshoot" className="spacer">
                 {TroubleArray} 
               </Details>} */}
 
-               <Details title="Online Support" className="spacer">
-                {OnlineArray}
+              <Details title="Online Support" className="spacer">
+                <div className="row">{OnlineArray}</div>
               </Details>
 
               {/* 
@@ -791,21 +808,16 @@ export default function TaskManager(props) {
               </Details>} */}
 
               <Details title="Change Location" className="spacer">
-                {ChangeArray}
+                <div className="row">{ChangeArray}</div>
               </Details>
-
 
               {/* {ChangeArray.length > 0 && <Details title="Change Location" className="spacer">
                 {ChangeArray}
             </Details>} */}
             </div>
-
-
           </div>
         </section>
       </div>
     </div>
   );
-
-
 }
