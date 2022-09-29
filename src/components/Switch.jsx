@@ -11,12 +11,10 @@ export default function Switch () {
  
     return (
         <>
-        <div className="card-footer">
-          <div className="d-flex flex-row-reverse bd-highlight">
-            <div className="bd-highlight"></div>
-          </div>
-        </div>
-        <div className="row">
+        <div className="card bg-light mb-2 mt-2">
+        <div className="card-body">
+
+        <div className="row mt-2">
           <div className="col-4">Installation confirmed</div>
           <label className="switch">
             <input
@@ -39,6 +37,8 @@ export default function Switch () {
             />
             <span className="slider round"></span>
           </label>
+        </div>
+        </div>
         </div>
         </>
     )

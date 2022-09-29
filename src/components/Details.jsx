@@ -76,6 +76,8 @@ export class MainDetails extends Component {
                       ? "/online_support"
                       : items.project.name == "Change Location"
                       ? "/change_location"
+                      : items.project.name == "Amendment"
+                      ? "/amendment"
                       : ""
                   }
                   state={{ data: items }}

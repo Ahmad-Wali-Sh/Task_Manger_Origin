@@ -371,3 +371,15 @@ body {
 .color--success {
     background-color: #19c509;
 }
+
+.deadline {
+    position: relative;
+    left:4.5rem;
+    top:1.9px;
+}
+
+.form-control:focus {
+    outline: none !important;
+    border-color: #d3d3d3;
+    box-shadow: 0 0 10px #ffffff;
+}

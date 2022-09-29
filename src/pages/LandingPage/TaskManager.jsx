@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRef } from "react";
 import axios from "axios";
 import Troubleshoot from "../../components/Troubleshoot";
-import Amendment from "../Amendment/Amendment";
+import Amendment from "../Amendment/components/Amendment";
 import ChangeLocation from "../ChangeLocation/ChangeLocationDetails";
 import LogMessage from "../../components/LogMessage";
 import { Details, MainDetails } from "../../components/Details";
@@ -95,6 +95,14 @@ export default function TaskManager(props) {
   const ChangeArray = contenter.map(
     (item) =>
       item.project.name == "Change Location" && (
+        <div className="col-6">
+          <MainDetails data={[item]} />
+        </div>
+      )
+  );
+  const AmendArray = contenter.map(
+    (item) =>
+      item.project.name == "Amendment" && (
         <div className="col-6">
           <MainDetails data={[item]} />
         </div>
@@ -811,6 +819,9 @@ export default function TaskManager(props) {
                 <div className="row">{ChangeArray}</div>
               </Details>
 
+              <Details title="Amendment" className="spacer">
+                <div className="row">{AmendArray}</div>
+              </Details>
               {/* {ChangeArray.length > 0 && <Details title="Change Location" className="spacer">
                 {ChangeArray}
             </Details>} */}

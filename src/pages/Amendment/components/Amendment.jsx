@@ -1,11 +1,12 @@
 import React from "react"
-// import Card from "./Card"
-import LogMessage from "../../components/LogMessage"
 
 export default function Amendment() {
+
+ 
     return (
         <section>
-            <h3>Amendment</h3>
+           
+                <h3>Amendment</h3>
             <div className="card text-dark bg-light mb-3">
                 <div className="card-header">
                     Task details
@@ -88,8 +89,8 @@ export default function Amendment() {
                         </div>
                     </div>
                 </div>
-                {/* <Card title="Amendment" /> */}
             </div>
+       
         </section>
     )
 }

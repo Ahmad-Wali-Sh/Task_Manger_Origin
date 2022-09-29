@@ -15,7 +15,8 @@ export default function Header() {
     axios.get(MEMBERS_URL, {}).then((res) => {
       setMembers(res.data.results);
     });
-  }, []);
+  },[]);
+  console.log(Members)
   
   const [details, setDetails] = React.useState([])
   React.useEffect( () => {
@@ -25,7 +26,8 @@ export default function Header() {
     });
   }, []);
 
- 
+  
+  
  
   const [memberList, setMemberList] = React.useState({
     assigned: [],
@@ -47,14 +49,14 @@ export default function Header() {
         ...memberList,
         assigned: prevState.assigned.filter(
           (assign) => assign !== event.target.value
-        ),
-      }));
-    }
-  };
-
-  console.log(memberList)
-
-  const MembersSubmit = async (e) => {
+          ),
+        }));
+      }
+    };
+    
+    console.log(memberList)
+    
+    const MembersSubmit = async (e) => {
     e.preventDefault();
     const MemberForm = new FormData();
 
@@ -76,9 +78,10 @@ export default function Header() {
     } catch (err) {
       console.log(err);
     }
-    // window.location.replace('')
+    window.location.replace('')
   };
-
+  const assign = details.map(item=>item.id)
+  
   return (
     <>
       <h1>{data.title}</h1>
@@ -180,7 +183,7 @@ export default function Header() {
                                 name="assigned"
                                 value={item.id}
                                 defaultChecked={
-                                  memberList.assigned.includes(String(item.id))
+                                  assign.includes(item.id) ? true : false
                                 }
                                 onChange={handleChange}
                               />

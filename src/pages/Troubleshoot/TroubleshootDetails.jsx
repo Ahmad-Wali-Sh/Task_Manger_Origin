@@ -21,7 +21,7 @@ const TroubleshootDetails = (props) => {
         <Link_Details data={[data]} id={data.id} />
         <CheckList />
         <Switch />
-        <LogMessage />
+        <LogMessage data={[data]} id={data.id} />
       </div>
     </div>
   );

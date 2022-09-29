@@ -20,7 +20,7 @@ const TaskDetails = (props) => {
           <Installations_details id={data.id} />
           <Link_Details data={[data]} id={data.id} />
           <Switch />
-          <LogMessage />
+          <LogMessage data={[data]} id={data.id}/>
         </section>
       </div>
     </div>

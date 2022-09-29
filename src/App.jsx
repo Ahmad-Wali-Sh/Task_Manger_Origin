@@ -5,6 +5,7 @@ import TaskDetails from "./pages/Installation/TaskDetails"
 import TroubleshootDetails from "./pages/Troubleshoot/TroubleshootDetails"
 import OnlineSupportDetails from "./pages/OnlineSupport/OnlineSupportDetails";
 import ChangeLocationDetails from "./pages/ChangeLocation/ChangeLocationDetails";
+import AmendmentDetails from "./pages/Amendment/AmendmentDetails";
 
 export default function App() {
     return (
@@ -16,6 +17,7 @@ export default function App() {
             <Route path="/troubleshoot" element={<TroubleshootDetails />}/>
             <Route path="/online_support" element={<OnlineSupportDetails />}/>
             <Route path="/change_location" element={<ChangeLocationDetails />}/>
+            <Route path="/amendment" element={<AmendmentDetails />}/>
         </Routes>
         </BrowserRouter>
         
