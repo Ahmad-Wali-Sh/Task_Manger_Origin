@@ -19,12 +19,12 @@ export default function CheckList() {
     });
   }, []);
 
-  const submitNotification = (e)  => {
-    NotificationManager.success("Sent!", "", 2000)
-  }
-  const warningNotification = (e)  => {
-    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
-  }
+  const submitNotification = (e) => {
+    NotificationManager.success("Sent!", "", 2000);
+  };
+  const warningNotification = (e) => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000);
+  };
 
   const [taskCheckList, setTaskCheckList] = useState([]);
 
@@ -70,25 +70,27 @@ export default function CheckList() {
       console.log(respone);
       submitNotification();
     } catch (err) {
-      console.log(err)
-      const errorNotification = (e)  => {
-        NotificationManager.error(err.message, "Error", 2000)
-      }
-      errorNotification()
-    }}
-    
+      console.log(err);
+      const errorNotification = (e) => {
+        NotificationManager.error(err.message, "Error", 2000);
+      };
+      errorNotification();
+    }
+  };
 
   return (
     <>
-      {taskCheckList == false && <button
-        type="button"
-        class="btn btn-primary mt-2"
-        data-bs-toggle="modal"
-        data-bs-target="#checklistModal"
-        data-bs-whatever="@mdo"
-      >
-        Add Checklist
-      </button>}
+      {taskCheckList == false && (
+        <button
+          type="button"
+          class="btn btn-primary mt-2"
+          data-bs-toggle="modal"
+          data-bs-target="#checklistModal"
+          data-bs-whatever="@mdo"
+        >
+          Add Checklist
+        </button>
+      )}
       <div
         class="modal fade"
         id="checklistModal"
@@ -99,91 +101,91 @@ export default function CheckList() {
         <div class="modal-dialog modal-ml">
           <div class="modal-content">
             <div class="modal-header">
-            <div className="form-check ml-3">
-            <form onSubmit={checklistSubmit}>
-              <h4 className="mt-3">Checklist</h4>
-              <br />
               <div className="form-check ml-3">
-                <ul className="list-unstyled">
-                  <li className="list-item">
-                    <input
-                      type="checkbox"
-                      className="form-check-input border border-primary"
-                      name="cable"
-                      id=""
-                      onChange={checkboxHandleChange}
-                    />
-                    &nbsp;Cable
-                  </li>
-                  <li className="list-item">
-                    <input
-                      type="checkbox"
-                      className="form-check-input border border-primary"
-                      name="stand"
-                      id=""
-                      onChange={checkboxHandleChange}
-                    />
-                    &nbsp;Stand
-                  </li>
-                  <li className="list-item">
-                    <input
-                      type="checkbox"
-                      className="form-check-input border border-primary"
-                      name="router"
-                      id=""
-                      onChange={checkboxHandleChange}
-                    />
-                    &nbsp;Router
-                  </li>
-                  <li className="list-item">
-                    <input
-                      type="checkbox"
-                      className="form-check-input border border-primary"
-                      name="antenna"
-                      id=""
-                      onChange={checkboxHandleChange}
-                    />
-                    &nbsp;Antenna
-                  </li>
-                  <li className="list-item">
-                    <input
-                      type="checkbox"
-                      className="form-check-input border border-primary"
-                      name="router_os"
-                      id=""
-                      onChange={checkboxHandleChange}
-                    />
-                    &nbsp;Router OS
-                  </li>
-                  <li className="list-item">
-                    <input
-                      type="checkbox"
-                      className="form-check-input border border-primary"
-                      name="signal"
-                      id=""
-                      onChange={checkboxHandleChange}
-                    />
-                    &nbsp;Signal
-                  </li>
-                  <li className="list-item">
-                    <input
-                      type="checkbox"
-                      className="form-check-input border border-primary"
-                      name="dns"
-                      id=""
-                      onChange={checkboxHandleChange}
-                    />
-                    &nbsp;DNS
-                  </li>
-                </ul>
+                <form onSubmit={checklistSubmit}>
+                  <h4 className="mt-3">Checklist</h4>
+                  <br />
+                  <div className="form-check ml-3">
+                    <ul className="list-unstyled">
+                      <li className="list-item">
+                        <input
+                          type="checkbox"
+                          className="form-check-input border border-primary"
+                          name="cable"
+                          id=""
+                          onChange={checkboxHandleChange}
+                        />
+                        &nbsp;Cable
+                      </li>
+                      <li className="list-item">
+                        <input
+                          type="checkbox"
+                          className="form-check-input border border-primary"
+                          name="stand"
+                          id=""
+                          onChange={checkboxHandleChange}
+                        />
+                        &nbsp;Stand
+                      </li>
+                      <li className="list-item">
+                        <input
+                          type="checkbox"
+                          className="form-check-input border border-primary"
+                          name="router"
+                          id=""
+                          onChange={checkboxHandleChange}
+                        />
+                        &nbsp;Router
+                      </li>
+                      <li className="list-item">
+                        <input
+                          type="checkbox"
+                          className="form-check-input border border-primary"
+                          name="antenna"
+                          id=""
+                          onChange={checkboxHandleChange}
+                        />
+                        &nbsp;Antenna
+                      </li>
+                      <li className="list-item">
+                        <input
+                          type="checkbox"
+                          className="form-check-input border border-primary"
+                          name="router_os"
+                          id=""
+                          onChange={checkboxHandleChange}
+                        />
+                        &nbsp;Router OS
+                      </li>
+                      <li className="list-item">
+                        <input
+                          type="checkbox"
+                          className="form-check-input border border-primary"
+                          name="signal"
+                          id=""
+                          onChange={checkboxHandleChange}
+                        />
+                        &nbsp;Signal
+                      </li>
+                      <li className="list-item">
+                        <input
+                          type="checkbox"
+                          className="form-check-input border border-primary"
+                          name="dns"
+                          id=""
+                          onChange={checkboxHandleChange}
+                        />
+                        &nbsp;DNS
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="modal-footer">
+                    <button className="btn btn-success" type="submit">
+                      Submit
+                    </button>
+                  </div>
+                </form>
               </div>
-              <div className="modal-footer">
-                <button className="btn btn-success" type="submit">
-                  Submit
-                </button>
-              </div>
-            </form>
-          </div>
             </div>
           </div>
         </div>

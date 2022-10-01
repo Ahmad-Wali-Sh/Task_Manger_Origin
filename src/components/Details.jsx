@@ -13,9 +13,8 @@ export class MainDetails extends Component {
       id: 0,
       project: "",
       contract_no: "",
-      stages: []
+      stages: [],
     };
-
   }
   updateTask = async (e, { ...tasks }) => {
     e.preventDefault();
@@ -26,45 +25,43 @@ export class MainDetails extends Component {
     this.setState({ data: this.props.data });
     axios({
       url: "http://192.168.60.55:8000/api/taskmanager/stage/",
-      method: 'GET',
+      method: "GET",
     }).then((e) => {
-      const stages = e.data.results
-      this.setState({stages})
-    })
+      const stages = e.data.results;
+      this.setState({ stages });
+    });
   }
 
-  submitNotification = (e)  => {
-    NotificationManager.success("Sent!", "", 2000)
-  }
-  errorNotification = (e)  => {
-    NotificationManager.error("Not Sent!", "", 2000)
-  }
-  warningNotification = (e)  => {
-    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
-  }
+  submitNotification = (e) => {
+    NotificationManager.success("Sent!", "", 2000);
+  };
+  errorNotification = (e) => {
+    NotificationManager.error("Not Sent!", "", 2000);
+  };
+  warningNotification = (e) => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000);
+  };
 
   changeState = async (e, task, stage) => {
-    e.preventDefault()
-    this.warningNotification()
-    const data = new FormData()
-    data.append('stage', stage)
+    e.preventDefault();
+    this.warningNotification();
+    const data = new FormData();
+    data.append("stage", stage);
 
-    try{
+    try {
       const response = await axios({
         url: `http://192.168.60.55:8000/api/taskmanager/task/${task}/`,
-        method: 'PATCH',
-        data: data
-      })
-      console.log(response)
-      this.submitNotification()
-    }catch(err) {
-      console.log(err)
-      this.errorNotification()
+        method: "PATCH",
+        data: data,
+      });
+      console.log(response);
+      this.submitNotification();
+    } catch (err) {
+      console.log(err);
+      this.errorNotification();
     }
-    window.location.replace('/')
-  }
-
-  
+    window.location.replace("/");
+  };
 
   render() {
     return (
@@ -73,7 +70,6 @@ export class MainDetails extends Component {
           <div className="cardItem ">
             <div className="row height">
               <div className="col-8 ">
-              
                 <Link
                   className="text-decoration-none"
                   to={
@@ -141,32 +137,46 @@ export class MainDetails extends Component {
                         </li>
                       </ul>
                     </div>
-                   
+
                     <div class="dropdown">
                       <a
-                       
                         href="#"
                         role="button"
                         id="dropdownMenuLink"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                       >
-                       <div className={items.stage.name == "New" ? "dot bg-secondary" : items.stage.name == "In-Progress" ? "dot bg-primary" : items.stage.name == "Completed" ? "dot color--success" : "dot bg-dark"}></div>
+                        <div
+                          className={
+                            items.stage.name == "New"
+                              ? "dot bg-secondary"
+                              : items.stage.name == "In-Progress"
+                              ? "dot bg-primary"
+                              : items.stage.name == "Completed"
+                              ? "dot color--success"
+                              : "dot bg-dark"
+                          }
+                        ></div>
                       </a>
 
                       <ul
                         class="dropdown-menu"
                         aria-labelledby="dropdownMenuLink"
                       >
-                        
-                        {this.state.stages.map(item=> (
+                        {this.state.stages.map((item) => (
                           <li>
-                          <a class="dropdown-item" name="stage" key={item.id} onClick={(e) => this.changeState(e,items.id, item.id)}>
-                            {item.name}
-                          </a>
-                        </li>
+                            <a
+                              class="dropdown-item"
+                              name="stage"
+                              key={item.id}
+                              onClick={(e) =>
+                                this.changeState(e, items.id, item.id)
+                              }
+                            >
+                              {item.name}
+                            </a>
+                          </li>
                         ))}
-                        
                       </ul>
                     </div>
                   </div>
@@ -263,7 +273,6 @@ export class MainDetails extends Component {
                         tabIndex="2"
                       >
                         <form>
-                         
                           <div className="input-group mb-3 mt-3">
                             <input
                               type="text"
@@ -291,8 +300,7 @@ export class MainDetails extends Component {
                                 Project
                               </label>
                             </div>
-                            <div className="col-3 col-sm-3 mt-2">
-                            </div>
+                            <div className="col-3 col-sm-3 mt-2"></div>
                             <div className="col-2 col-sm-2"></div>
                             <div className="col-1 col-sm-1">
                               <label
@@ -378,9 +386,7 @@ export function Details(props) {
         <div className="col-10 offset-md-1">
           <div className="card">
             <div className="card-header">{props.title}</div>
-            <div className="card-body">
-              {props.children}
-            </div>
+            <div className="card-body">{props.children}</div>
           </div>
         </div>
       </div>

@@ -16,32 +16,31 @@ export default function Header() {
     axios.get(MEMBERS_URL, {}).then((res) => {
       setMembers(res.data.results);
     });
-  },[]);
-  console.log(Members)
-  
-  const [details, setDetails] = React.useState([])
-  React.useEffect( () => {
+  }, []);
+  console.log(Members);
+
+  const [details, setDetails] = React.useState([]);
+  React.useEffect(() => {
     axios.get(TASK_URL + `${data.id}/`, {}).then((res) => {
       setDetails(res.data.assigned);
     });
   }, []);
 
-  const submitNotification = (e)  => {
-    NotificationManager.success("Sent!", "", 2000)
-  }
+  const submitNotification = (e) => {
+    NotificationManager.success("Sent!", "", 2000);
+  };
 
-  const warningNotification = (e)  => {
-    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
-  }
-  
- 
+  const warningNotification = (e) => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000);
+  };
+
   const [memberList, setMemberList] = React.useState({
     assigned: [],
   });
 
   React.useEffect(() => {
     member.map((item) => memberList.assigned.push(String(item.id)));
-  },[])
+  }, []);
 
   const handleChange = (event) => {
     if (event.target.checked) {
@@ -55,16 +54,16 @@ export default function Header() {
         ...memberList,
         assigned: prevState.assigned.filter(
           (assign) => assign !== event.target.value
-          ),
-        }));
-      }
-    };
-    
-    console.log(memberList)
-    
-    const MembersSubmit = async (e) => {
+        ),
+      }));
+    }
+  };
+
+  console.log(memberList);
+
+  const MembersSubmit = async (e) => {
     e.preventDefault();
-    warningNotification()
+    warningNotification();
     const MemberForm = new FormData();
 
     memberList.assigned.map((item) => MemberForm.append("assigned", item));
@@ -78,50 +77,49 @@ export default function Header() {
         },
       });
       console.log(response);
-      submitNotification()
+      submitNotification();
       axios.get(TASK_URL + `${data.id}/`, {}).then((res) => {
         setDetails(res.data.assigned);
-        setMemberList({assigned: res.data.assigned});
+        setMemberList({ assigned: res.data.assigned });
       });
     } catch (err) {
       console.log(err);
-      const errorNotification = (e)  => {
-        NotificationManager.error(err.message, "Error", 2000)
-      }
-      errorNotification()
+      const errorNotification = (e) => {
+        NotificationManager.error(err.message, "Error", 2000);
+      };
+      errorNotification();
     }
-    window.location.replace('')
+    window.location.replace("");
   };
-  const assign = details.map(item=>item.id)
-  
+  const assign = details.map((item) => item.id);
+
   return (
     <>
       <h1>{data.title}</h1>
       <div className="members mt-3">
         <ul>
           {details.map((member) => (
-          <li>
-          <img
-            src={member.avatar}
-            alt=""
-            className="avatar avatar--header"
-            data-toggle="tooltip"
-            data-placement="top"
-            title={member.name}
-          />
-          </li>
-        ))}
-        <button
-          type="button"
-          name="addTask"
-          className="btn btn-secondary rounded-circle circle-width mx-3"
-          data-bs-toggle="modal"
-          data-bs-target="#membersModal"
-        >
-          <i className="fa-solid fa-plus "></i>
-        </button>
+            <li>
+              <img
+                src={member.avatar}
+                alt=""
+                className="avatar avatar--header"
+                data-toggle="tooltip"
+                data-placement="top"
+                title={member.name}
+              />
+            </li>
+          ))}
+          <button
+            type="button"
+            name="addTask"
+            className="btn btn-secondary rounded-circle circle-width mx-3"
+            data-bs-toggle="modal"
+            data-bs-target="#membersModal"
+          >
+            <i className="fa-solid fa-plus "></i>
+          </button>
         </ul>
-        
 
         <div
           class="modal fade"

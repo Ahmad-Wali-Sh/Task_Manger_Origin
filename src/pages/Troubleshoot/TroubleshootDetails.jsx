@@ -1,8 +1,6 @@
 import React from "react";
-import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import LogMessage from "../../components/LogMessage";
-import axios from "axios";
 import Troubleshoot from "./components/Troubleshoot";
 import Header from "../../components/Header";
 import Switch from "../../components/Switch";

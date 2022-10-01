@@ -1,13 +1,11 @@
-import React from "react"
+import React from "react";
 
 export default function Troubleshoot() {
   return (
     <section>
       <h3>Troubleshoot</h3>
       <div className="card text-dark bg-light mb-3">
-        <div className="card-header">
-          Task details
-        </div>
+        <div className="card-header">Task details</div>
         <div className="card-body">
           <div className="row mt-1">
             <label
@@ -90,19 +88,10 @@ export default function Troubleshoot() {
               />
             </div>
           </div>
-          <div
-            className="row mt-5"
-            id="pills-tab"
-            role="tablist"
-          >
+          <div className="row mt-5" id="pills-tab" role="tablist">
             <div className="col-12">
               <nav>
-                <div
-                  className="nav nav-tabs"
-                  id="nav-tab"
-                  role="tablist"
-                >
-
+                <div className="nav nav-tabs" id="nav-tab" role="tablist">
                   <span
                     className="nav-link active"
                     id="nav-home-tab"
@@ -117,10 +106,7 @@ export default function Troubleshoot() {
                   </span>
                 </div>
               </nav>
-              <div
-                className="tab-content"
-                id="nav-tabContent"
-              >
+              <div className="tab-content" id="nav-tabContent">
                 <div
                   className="tab-pane fade show active"
                   id="nav-home"
@@ -139,7 +125,6 @@ export default function Troubleshoot() {
           </div>
         </div>
         <div className="form-check ml-3">
-
           <h4 className="mt-3">Checklist</h4>
           <br />
           <div className="form-check ml-3">
@@ -215,10 +200,7 @@ export default function Troubleshoot() {
       <div className="card-footer">
         <div className="d-flex flex-row-reverse bd-highlight">
           <div className="bd-highlight">
-            <button
-              type="submit"
-              className="btn btn-success"
-            >
+            <button type="submit" className="btn btn-success">
               <i className="fa-duotone fa-floppy-disk"></i>
               &nbsp;Save
             </button>
@@ -226,6 +208,5 @@ export default function Troubleshoot() {
         </div>
       </div>
     </section>
-  )
-
+  );
 }

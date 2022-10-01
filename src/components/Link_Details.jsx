@@ -21,13 +21,13 @@ export default function Link_Details(props) {
       });
   }, []);
 
-  const submitNotification = (e)  => {
-    NotificationManager.success("Sent!", "", 2000)
-  }
- 
-  const warningNotification = (e)  => {
-    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
-  }
+  const submitNotification = (e) => {
+    NotificationManager.success("Sent!", "", 2000);
+  };
+
+  const warningNotification = (e) => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000);
+  };
 
   const [linkdetails, setLinkDetails] = React.useState({
     installation_type: "",
@@ -51,7 +51,7 @@ export default function Link_Details(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    warningNotification()
+    warningNotification();
     const data = new FormData();
 
     Object.keys(linkdetails).map((key) => {
@@ -61,7 +61,7 @@ export default function Link_Details(props) {
       );
     });
 
-    if (linkdetails.installation_date != '') {
+    if (linkdetails.installation_date != "") {
       data.append(
         "installation_date",
         new Date(linkdetails.installation_date).toISOString()
@@ -69,7 +69,6 @@ export default function Link_Details(props) {
     }
 
     try {
-      
       const response = await axios({
         method: count > 0 ? "PATCH" : "POST",
         url:
@@ -78,19 +77,18 @@ export default function Link_Details(props) {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        
       });
-      
-      console.log(response);
-      {response && submitNotification()}
-     
 
+      console.log(response);
+      {
+        response && submitNotification();
+      }
     } catch (err) {
       console.log(err);
-      const errorNotification = (e)  => {
-        NotificationManager.error(err.message, "Error!", 2000)
-      }
-      errorNotification()
+      const errorNotification = (e) => {
+        NotificationManager.error(err.message, "Error!", 2000);
+      };
+      errorNotification();
     }
   };
 
@@ -533,16 +531,15 @@ export default function Link_Details(props) {
                           defaultValue={item.additional_details}
                         ></textarea>
                         <div className="modal-footer">
-                        <button className="btn btn-success" type="submit">
-                          Submit
-                        </button>
+                          <button className="btn btn-success" type="submit">
+                            Submit
+                          </button>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              
             </div>
           ))}
       </form>

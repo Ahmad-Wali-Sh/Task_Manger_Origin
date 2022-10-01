@@ -12,14 +12,12 @@ export default function LogMessage(props) {
   });
   const [note, setNote] = React.useState([]);
 
-
-
-  const submitNotification = (e)  => {
-    NotificationManager.success("Sent!", "", 2000)
-  }
-  const warningNotification = (e)  => {
-    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
-  }
+  const submitNotification = (e) => {
+    NotificationManager.success("Sent!", "", 2000);
+  };
+  const warningNotification = (e) => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000);
+  };
 
   const [inputStr, setInputStr] = useState("");
 
@@ -31,7 +29,7 @@ export default function LogMessage(props) {
 
   const LogMessageSubmit = async (e) => {
     e.preventDefault();
-    warningNotification()
+    warningNotification();
     const LogMessageForm = new FormData();
     LogMessageForm.append("body", inputStr);
     LogMessageForm.append("task", logmessage.task);
@@ -49,10 +47,10 @@ export default function LogMessage(props) {
       submitNotification();
     } catch (err) {
       console.log(err);
-      const errorNotification = (e)  => {
-        NotificationManager.error(err.message, "Error!", 2000)
-      }
-      errorNotification()
+      const errorNotification = (e) => {
+        NotificationManager.error(err.message, "Error!", 2000);
+      };
+      errorNotification();
     }
   };
   console.log(props.id);
@@ -81,9 +79,6 @@ export default function LogMessage(props) {
         : new Date(date).getMinutes())
     );
   }
-
-
-
 
   return (
     <>
@@ -183,7 +178,6 @@ export default function LogMessage(props) {
           tabindex="0"
         >
           <div className="card text-dark bg-light mb-3">
-
             <div className="card-body">
               <div className="row">
                 <div className="col-1">
@@ -203,9 +197,7 @@ export default function LogMessage(props) {
                     value={inputStr}
                     onChange={(e) => setInputStr(e.target.value)}
                   ></textarea>
-                
                 </div>
-
               </div>
 
               <div className="row mt-2">
@@ -222,18 +214,15 @@ export default function LogMessage(props) {
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdown1">
                       <li>
-                        
-
                         <Picker
                           pickerStyle={{ width: "100%" }}
                           onEmojiClick={onEmojiClick}
                           width={300}
                           height={300}
                           previewConfig={{
-                          showPreview:false
+                            showPreview: false,
                           }}
                         />
-
                       </li>
                     </ul>
                   </div>
@@ -297,7 +286,6 @@ export default function LogMessage(props) {
               <div className="col">
                 <div className="row">
                   <div className="dropdown">
-
                     <button
                       className="btn text-muted"
                       type="button"

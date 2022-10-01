@@ -25,14 +25,12 @@ export default function TaskManager(props) {
     selectedProject: "",
   };
 
-  let switchInitialState = {
-    switch: false,
-  };
+ 
 
   const url = process.env.REACT_APP_CONTRACT;
   const [contract, setContract] = useState(contractState);
   const [project, setProject] = useState(taskProjectState);
-  let [switchState, setSwitchState] = useState(switchInitialState);
+ 
   let contratsLength = 0;
   const contractNoRef = useRef();
   const projectRef = useRef();
