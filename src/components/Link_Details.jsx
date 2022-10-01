@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import NotificationManager from "react-notifications/lib/NotificationManager";
 
 export default function Link_Details(props) {
   const [LinkDetailsData, setLinkDetailsData] = React.useState([]);
@@ -19,6 +20,14 @@ export default function Link_Details(props) {
         console.log(res.data.results);
       });
   }, []);
+
+  const submitNotification = (e)  => {
+    NotificationManager.success("Sent!", "", 2000)
+  }
+ 
+  const warningNotification = (e)  => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
+  }
 
   const [linkdetails, setLinkDetails] = React.useState({
     installation_type: "",
@@ -42,22 +51,8 @@ export default function Link_Details(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    warningNotification()
     const data = new FormData();
-    // Object.keys(linkdetails).map((key) => {
-    //   data.append(key, key === 'installation_date' ? new Date(linkdetails[key]).toISOString() : linkdetails[key]);
-    // });
-    // data.append("installation_type", linkdetails.installation_type);
-    // data.append("device", linkdetails.device);
-    // data.append("access_point", linkdetails.access_point);
-    // data.append("signal", linkdetails.signal);
-    // data.append("ccq", linkdetails.ccq);
-    // data.append("cable", linkdetails.cable);
-    // data.append("connector", linkdetails.connector);
-    // data.append("payment", linkdetails.payment);
-    // data.append("bill_number", linkdetails.bill_number);
-    // data.append("additional_details", linkdetails.additional_details);
-    // data.append("task", linkdetails.task);
 
     Object.keys(linkdetails).map((key) => {
       data.append(
@@ -74,6 +69,7 @@ export default function Link_Details(props) {
     }
 
     try {
+      
       const response = await axios({
         method: count > 0 ? "PATCH" : "POST",
         url:
@@ -82,50 +78,23 @@ export default function Link_Details(props) {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        
       });
+      
       console.log(response);
+      {response && submitNotification()}
+     
 
-      // const UpdateTask = new FormData();
-
-      // UpdateTask.append("link_details", response.data.id);
-
-      // const res = await axios({
-      //   method: "patch",
-      //   url: process.env.REACT_APP_INSTALL + `${InstallationDetails}/`,
-      //   data: UpdateTask,
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
     } catch (err) {
       console.log(err);
+      const errorNotification = (e)  => {
+        NotificationManager.error(err.message, "Error!", 2000)
+      }
+      errorNotification()
     }
   };
 
-  // const LinkDetailsSu = async (e) => {
-  //   e.preventDefault();
-  //   const data = new FormData();
-
-  //     Object.keys(settings).map((key) => {
-  //       data.append(settings[key] != '' && key, settings[key] != '' && settings[key]);
-  //     })
-
-  //     console.log(count)
-  //   try {
-  //     const response = await axios({
-  //       method: count > 0 ? 'PATCH' : 'POST' ,
-  //       url: count > 0 ? INSTALL_URL + `${taskID}/` : INSTALL_URL,
-  //       data: data,
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-  //   } catch (err) {
-  //     console.log(err.message);
-  //   }
-
-  // };
-
   console.log(linkdetails);
-  // console.log(LinkDetailsData);
 
   return (
     <div>
@@ -507,7 +476,7 @@ export default function Link_Details(props) {
                       id="bill_number"
                       className="form-control"
                       onChange={handleChange}
-                      value={item.bill_number}
+                      defaultValue={item.bill_number}
                     />
                   </div>
                   <div className="col-2"></div>

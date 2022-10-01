@@ -11,18 +11,16 @@ export default function ChangeLocationDetails() {
   const location = useLocation();
   const data = location.state?.data;
 
-
   return (
     <div className="page">
       <div className="col-6 mt-5 m-auto">
         <Header />
         <ChangeLocation />
-        <Link_Details data={[data]} id={data.id}/>
-        <CheckList  />
+        <Link_Details data={[data]} id={data.id} />
+        <CheckList />
         <Switch />
-        <LogMessage data={[data]} id={data.id}/>
+        <LogMessage data={[data]} id={data.id} />
       </div>
     </div>
   );
-};
-
+}

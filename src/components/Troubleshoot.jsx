@@ -1,5 +1,4 @@
 import React from "react"
-// import Card from "./Card"
 
 export default function Troubleshoot() {
   return (
@@ -138,9 +137,6 @@ export default function Troubleshoot() {
               </div>
             </div>
           </div>
-          {/* TROUBLESHOOT RESULT */}
-          {/* <Card title="Troubleshoot Result" /> */}
-          {/* TROUBLESHOOTING CHECKLIST */}
         </div>
         <div className="form-check ml-3">
 
@@ -214,10 +210,8 @@ export default function Troubleshoot() {
             </ul>
           </div>
         </div>
-        {/* END CHECKLIST */}
       </div>
 
-      {/* END TROUBLESHOOT RESULT */}
       <div className="card-footer">
         <div className="d-flex flex-row-reverse bd-highlight">
           <div className="bd-highlight">

@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import NotificationManager from "react-notifications/lib/NotificationManager";
 
 export default function CheckList() {
   const location = useLocation();
@@ -17,6 +18,13 @@ export default function CheckList() {
       console.log(res.data.results);
     });
   }, []);
+
+  const submitNotification = (e)  => {
+    NotificationManager.success("Sent!", "", 2000)
+  }
+  const warningNotification = (e)  => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
+  }
 
   const [taskCheckList, setTaskCheckList] = useState([]);
 
@@ -42,6 +50,7 @@ export default function CheckList() {
 
   const checklistSubmit = async (event) => {
     event.preventDefault();
+    warningNotification();
     const checklistForm = new FormData();
 
     Object.keys(checklist).map((key) => {
@@ -51,14 +60,23 @@ export default function CheckList() {
       );
     });
 
-    const respone = await axios({
-      method: count > 0 ? "PATCH" : "POST",
-      url: count > 0 ? CHECKLIST_URL + `${checkListId}/` : CHECKLIST_URL,
-      data: checklistForm,
-      header: { "Content-Type": "multipart/form-data" },
-    });
-    console.log(respone);
-  };
+    try {
+      const respone = await axios({
+        method: count > 0 ? "PATCH" : "POST",
+        url: count > 0 ? CHECKLIST_URL + `${checkListId}/` : CHECKLIST_URL,
+        data: checklistForm,
+        header: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(respone);
+      submitNotification();
+    } catch (err) {
+      console.log(err)
+      const errorNotification = (e)  => {
+        NotificationManager.error(err.message, "Error", 2000)
+      }
+      errorNotification()
+    }}
+    
 
   return (
     <>

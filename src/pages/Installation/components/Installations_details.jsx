@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import NotificationManager from "react-notifications/lib/NotificationManager";
 
 const Installations_details = (props) => {
   const [settings, setSettings] = React.useState({
@@ -8,6 +9,16 @@ const Installations_details = (props) => {
     description: "",
     task: props.id,
   });
+
+  const submitNotification = (e)  => {
+    NotificationManager.success("Sent!", "", 2000)
+  }
+  const errorNotification = (e)  => {
+    NotificationManager.error("Not Sent!", "", 2000)
+  }
+  const warningNotification = (e)  => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
+  }
 
   const INSTALL_URL = process.env.REACT_APP_INSTALL;
 
@@ -32,6 +43,7 @@ const Installations_details = (props) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    warningNotification();
     const data = new FormData();
 
     Object.keys(settings).map((key) => {
@@ -51,8 +63,14 @@ const Installations_details = (props) => {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log(response)
+      submitNotification()
     } catch (err) {
       console.log(err.message);
+      const errorNotification = (e)  => {
+        NotificationManager.error(err.message, "Error!", 2000)
+      }
+      errorNotification()
     }
   };
 

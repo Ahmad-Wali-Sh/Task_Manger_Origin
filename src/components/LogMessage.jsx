@@ -1,7 +1,8 @@
 import axios from "axios";
 import React from "react";
-import { useState } from "react"
+import { useState } from "react";
 import Picker from "emoji-picker-react";
+import NotificationManager from "react-notifications/lib/NotificationManager";
 
 export default function LogMessage(props) {
   const TASK_LOG_URL = process.env.REACT_APP_TASK_LOG;
@@ -11,39 +12,26 @@ export default function LogMessage(props) {
   });
   const [note, setNote] = React.useState([]);
 
-  // new Picker({
-  //   data: async () => {
-  //     const response = await fetch(
-  //       'https://cdn.jsdelivr.net/npm/@emoji-mart/data',
-  //     )
 
-  //     return response.json()
-  //   }
-  // })
-  
+
+  const submitNotification = (e)  => {
+    NotificationManager.success("Sent!", "", 2000)
+  }
+  const warningNotification = (e)  => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
+  }
+
   const [inputStr, setInputStr] = useState("");
-
 
   const onEmojiClick = (event) => {
     setInputStr((prevInput) => prevInput + event.emoji);
   };
 
-
-
-
-  // const logMessageChange = (e) => {
-  //   setLogMessage((prevInput) => (
-  //     ...logmessage,
-  //     prveInput + e.emoji
-  //   ))
-  // };
-
-
-
   console.log(inputStr);
 
   const LogMessageSubmit = async (e) => {
     e.preventDefault();
+    warningNotification()
     const LogMessageForm = new FormData();
     LogMessageForm.append("body", inputStr);
     LogMessageForm.append("task", logmessage.task);
@@ -58,8 +46,13 @@ export default function LogMessage(props) {
         },
       });
       console.log(response);
+      submitNotification();
     } catch (err) {
       console.log(err);
+      const errorNotification = (e)  => {
+        NotificationManager.error(err.message, "Error!", 2000)
+      }
+      errorNotification()
     }
   };
   console.log(props.id);
@@ -80,22 +73,17 @@ export default function LogMessage(props) {
   }, []);
 
   function created(date) {
-    return new Date(date).getHours() + ":" + (new Date(date).getMinutes() < 10 ? "0" + new Date(date).getMinutes() : new Date(date).getMinutes());
+    return (
+      new Date(date).getHours() +
+      ":" +
+      (new Date(date).getMinutes() < 10
+        ? "0" + new Date(date).getMinutes()
+        : new Date(date).getMinutes())
+    );
   }
 
-  const [sendMessage, setSendMessage] = React.useState({
-    body: "",
-    task: props.id,
-  });
 
-  const SendMessageChange = (e) => {
-    setSendMessage({
-      ...sendMessage,
-      [e.target.name]: e.target.value,
-    });
-  };
 
-  const [text, setText] = React.useState("");
 
   return (
     <>
@@ -195,8 +183,7 @@ export default function LogMessage(props) {
           tabindex="0"
         >
           <div className="card text-dark bg-light mb-3">
-            {/* <div className="card-header">Log note</div> */}
-            
+
             <div className="card-body">
               <div className="row">
                 <div className="col-1">
@@ -204,37 +191,26 @@ export default function LogMessage(props) {
                     <img src={user.avatar} alt="" className="avatar" />
                   </label>
                 </div>
-                
+
                 <div className="col-11">
                   <textarea
-                      autosize="true"
-                      id="log_note"
-                      name="body"
-                      placeholder="Log an internal note..."
-                      className="form-control text-area"
-                      rows="3"
-                      value={inputStr}
-
-                      onChange={(e) => setInputStr(e.target.value)}
-                    ></textarea>
-                  {/* <InputEmoji
-                    value={text}
-                    onChange={logMessageChange}
-                    cleanOnEnter
-                    placeholder="Type a message"
-                  /> */}
+                    autosize="true"
+                    id="log_note"
+                    name="body"
+                    placeholder="Log an internal note..."
+                    className="form-control text-area"
+                    rows="3"
+                    value={inputStr}
+                    onChange={(e) => setInputStr(e.target.value)}
+                  ></textarea>
+                
                 </div>
-               
-                {/* <Picker onEmojiClick={onEmojiClick}/> */}
+
               </div>
 
               <div className="row mt-2">
                 <div className="col-1 offset-1">
-                  {/* <i className="fa-regular fa-face-smile p-1 icon text-muted"></i>
-                
-                    <i className="fa-solid fa-paperclip p-1 icon text-muted"></i> */}
                   <div className="dropdown">
-                    {/* className="dropdown-toggle" */}
                     <button
                       className="border-0 offset-8 text-muted"
                       type="button"
@@ -246,30 +222,23 @@ export default function LogMessage(props) {
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="dropdown1">
                       <li>
-                        {/* <EmojiPicker
-                            onEmojiClick={onEmojiClick}
-                            previewConfig={{
-                              showPreview: false,
-                            }}
-                            autoFocusSearch={false}
-                            suggestedEmojisMode={false}
-                            emojiStyle="google"
-                            skinTonesDisabled={true}
-                            width="300"
-                            height="300"
+                        
 
-                          /> */}
-                          
-                            <Picker pickerStyle={{ width: "100%" }} onEmojiClick={onEmojiClick} />
-                          
+                        <Picker
+                          pickerStyle={{ width: "100%" }}
+                          onEmojiClick={onEmojiClick}
+                          width={300}
+                          height={300}
+                          previewConfig={{
+                          showPreview:false
+                          }}
+                        />
 
-                        {/* <Picker emoji="" title="" native={true}  /> */}
                       </li>
                     </ul>
                   </div>
                 </div>
                 <div className="col-1">
-                  {/* className="dropdown-toggle" */}
                   <button
                     className="border-0"
                     type="button"
@@ -297,74 +266,68 @@ export default function LogMessage(props) {
                 <div className="col-1 col-md-1 col-sm-2"></div>
                 <div className="col-1 col-sm-1 mt-3">
                   <form onSubmit={LogMessageSubmit}>
-                  <input
-                    type="submit"
-                    className="btn btn-secondary btn-sm"
-                    value="Log"
-                  />
+                    <input
+                      type="submit"
+                      className="btn btn-secondary btn-sm"
+                      value="Log"
+                    />
                   </form>
                 </div>
               </div>
             </div>
-            {/* Notes Go Here */}
-
-            
           </div>
         </div>
         {note.map((item) => (
-              <div className="card-body shadow p-3 mb-2 bg-body rounded col-12">
-                <div className="row align-items-center ">
-                  <div className="col-1 col-md-1 col-sm-2 ">
-                    <label htmlFor="log_note" className="col-form-label">
-                      <img src={item.user.avatar} alt="" className="avatar" />
-                    </label>
-                  </div>
-                  <div className="col-5 mx-3 mb-1">
-                    {item.user.name}
-                  </div>
-                  <div className="col-3 offset-1 deadline text-muted mb-1" style={{fontSize:"12px"}}>
-                    {new Date(item.created).getDate() == new Date().getDate()
-                      ? "Today" + " " + created(item.created)
-                      : new Date(item.created).toDateString().slice(0,10)}
-                  </div>
-                  <div className="col">
-                    <div className="row">
-                      <div className="dropdown">
-                        {/* className="dropdown-toggle" */}
+          <div className="card-body shadow p-3 mb-2 bg-body rounded col-12">
+            <div className="row align-items-center ">
+              <div className="col-1 col-md-1 col-sm-2 ">
+                <label htmlFor="log_note" className="col-form-label">
+                  <img src={item.user.avatar} alt="" className="avatar" />
+                </label>
+              </div>
+              <div className="col-5 mx-3 mb-1">{item.user.name}</div>
+              <div
+                className="col-3 offset-1 deadline text-muted mb-1"
+                style={{ fontSize: "12px" }}
+              >
+                {new Date(item.created).getDate() == new Date().getDate()
+                  ? "Today" + " " + created(item.created)
+                  : new Date(item.created).toDateString().slice(0, 10)}
+              </div>
+              <div className="col">
+                <div className="row">
+                  <div className="dropdown">
 
-                        <button
-                          className="btn text-muted"
-                          type="button"
-                          id="dropdown1"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          <i className="fa-solid fa-ellipsis-vertical"></i>
-                        </button>
-                        <ul
-                          className="dropdown-menu"
-                          aria-labelledby="dropdown1"
-                        >
-                          <li>
-                            <a className="dropdown-item text-primary" href="#">
-                              Edit
-                            </a>
-                          </li>
-                          <li>
-                            <a className="dropdown-item text-danger" href="#">
-                              Archive
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-11 col-md-11 col-sm-11 offset-1">
-                    {item.body}
+                    <button
+                      className="btn text-muted"
+                      type="button"
+                      id="dropdown1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i className="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul className="dropdown-menu" aria-labelledby="dropdown1">
+                      <li>
+                        <a className="dropdown-item text-primary" href="#">
+                          Edit
+                        </a>
+                      </li>
+                      <li>
+                        <a className="dropdown-item text-danger" href="#">
+                          Archive
+                        </a>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
-            ))}
+              <div className="col-11 col-md-11 col-sm-11 offset-1">
+                {item.body}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </>
   );

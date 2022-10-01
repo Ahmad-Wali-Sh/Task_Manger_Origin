@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import NotificationManager from "react-notifications/lib/NotificationManager";
 
 export default function OnlineSupport() {
   const location = useLocation();
@@ -16,6 +17,17 @@ export default function OnlineSupport() {
     description: "",
     task: data.id
   })
+
+
+  const submitNotification = (e)  => {
+    NotificationManager.success("Sent!", "", 2000)
+  }
+  const errorNotification = (e)  => {
+    NotificationManager.error("Not Sent!", "", 2000)
+  }
+  const warningNotification = (e)  => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
+  }
 
 
 
@@ -38,6 +50,7 @@ export default function OnlineSupport() {
 
   const OnlineSupportUpdate = async (e) => {
     e.preventDefault();
+    warningNotification()
     const OnlineSupportForm = new FormData();
 
     Object.keys(OnlineSupportData).map((key) => {
@@ -57,8 +70,11 @@ export default function OnlineSupport() {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log(response)
+      submitNotification()
     } catch (err) {
       console.log(err.message);
+      errorNotification()
     }
   };
 
@@ -74,6 +90,7 @@ export default function OnlineSupport() {
 
   const OnlineSupportSubmit = async (e) => {
     e.preventDefault();
+    warningNotification()
     const OnlineSupportForm = new FormData();
 
     Object.keys(OnlineSupportData).map((key) => {
@@ -93,8 +110,10 @@ export default function OnlineSupport() {
         },
       });
       console.log(response);
+      submitNotification()
     } catch (err) {
       console.log(err.message);
+      errorNotification()
     }
   };
 

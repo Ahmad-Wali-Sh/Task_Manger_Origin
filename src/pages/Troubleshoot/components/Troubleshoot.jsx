@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import CheckList from "../../../components/CheckList";
+import NotificationManager from "react-notifications/lib/NotificationManager";
+
 
 export default function Troubleshoot() {
   const location = useLocation();
@@ -20,6 +22,16 @@ export default function Troubleshoot() {
       console.log(res.data.count);
     });
   }, []);
+
+  const submitNotification = (e)  => {
+    NotificationManager.success("Sent!", "", 2000)
+  }
+  const errorNotification = (e)  => {
+    NotificationManager.error("Not Sent!", "", 2000)
+  }
+  const warningNotification = (e)  => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
+  }
 
 
 
@@ -45,7 +57,7 @@ export default function Troubleshoot() {
 
   const updateTrobleshoot = async (e) => {
     e.preventDefault()
-
+    warningNotification()
     const data = new FormData()
 
     Object.keys(truobleshoot).map((key) => {
@@ -62,13 +74,16 @@ export default function Troubleshoot() {
           },
         });
         console.log(response);
+        submitNotification()
       } catch (err) {
         console.log(err.message);
+        errorNotification()
       }
   }
 
   function TroubleshootSubmit(e) {
     e.preventDefault();
+    warningNotification()
     const TroubleshootForm = new FormData();
     TroubleshootForm.append("address", truobleshoot.address);
     TroubleshootForm.append("contact", truobleshoot.contact);
@@ -89,8 +104,10 @@ export default function Troubleshoot() {
         },
       });
       console.log(response);
+      submitNotification()
     } catch (err) {
       console.log(err.message);
+      errorNotification()
     }
 
 

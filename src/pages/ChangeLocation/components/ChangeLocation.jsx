@@ -2,12 +2,15 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import { NotificationManager } from 'react-notifications';
 
 const ChangeLocation = (props) => {
   const location = useLocation();
   const data = location.state?.data;
 
   console.log(data.id)
+
+  
 
 
   const CHANGE_URL = process.env.REACT_APP_CHANGE_LOCATION;
@@ -38,9 +41,19 @@ const ChangeLocation = (props) => {
     console.log(event.target.value);
   };
 
+  const submitNotification = (e)  => {
+    NotificationManager.success("Sent!", "", 2000)
+  }
+  const errorNotification = (e)  => {
+    NotificationManager.error("Not Sent!", "", 2000)
+  }
+  const warningNotification = (e)  => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
+  }
+
   const updateChangeLocation = async (e) => {
     e.preventDefault();
-
+    warningNotification()
     const data = new FormData();
 
     Object.keys(changelocation).map((key) => {
@@ -60,13 +73,16 @@ const ChangeLocation = (props) => {
         },
       });
       console.log(response);
+      submitNotification()
     } catch (err) {
       console.log(err.message);
+      errorNotification()
     }
   };
 
   const ChangeLocationSubmit = async (e) => {
     e.preventDefault();
+    warningNotification()
     const ChangeLocationForm = new FormData();
     ChangeLocationForm.append("address", changelocation.address);
     ChangeLocationForm.append("contact", changelocation.contact);
@@ -84,8 +100,13 @@ const ChangeLocation = (props) => {
         },
       });
       console.log(response);
+      submitNotification()
     } catch (err) {
       console.log(err);
+      const errorNotification = (e)  => {
+        NotificationManager.error(err.message, "Error!", 2000)
+      }
+      errorNotification()
     }
   };
 
@@ -218,7 +239,7 @@ const ChangeLocation = (props) => {
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button type="submit" className="btn btn-success ">
+                  <button type="submit" className="btn btn-success">
                     Submit
                   </button>
                 </div>

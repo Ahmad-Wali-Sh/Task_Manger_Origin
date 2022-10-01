@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import NotificationManager from "react-notifications/lib/NotificationManager";
 
 export default function Header() {
   const location = useLocation();
@@ -22,11 +23,16 @@ export default function Header() {
   React.useEffect( () => {
     axios.get(TASK_URL + `${data.id}/`, {}).then((res) => {
       setDetails(res.data.assigned);
-      // setMemberList({assigned: res.data.assigned})
     });
   }, []);
 
-  
+  const submitNotification = (e)  => {
+    NotificationManager.success("Sent!", "", 2000)
+  }
+
+  const warningNotification = (e)  => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
+  }
   
  
   const [memberList, setMemberList] = React.useState({
@@ -58,6 +64,7 @@ export default function Header() {
     
     const MembersSubmit = async (e) => {
     e.preventDefault();
+    warningNotification()
     const MemberForm = new FormData();
 
     memberList.assigned.map((item) => MemberForm.append("assigned", item));
@@ -71,12 +78,17 @@ export default function Header() {
         },
       });
       console.log(response);
+      submitNotification()
       axios.get(TASK_URL + `${data.id}/`, {}).then((res) => {
         setDetails(res.data.assigned);
         setMemberList({assigned: res.data.assigned});
       });
     } catch (err) {
       console.log(err);
+      const errorNotification = (e)  => {
+        NotificationManager.error(err.message, "Error", 2000)
+      }
+      errorNotification()
     }
     window.location.replace('')
   };
@@ -147,26 +159,6 @@ export default function Header() {
                     <form onSubmit={MembersSubmit}>
                       <div className="membersbox">
                         <ul className="row">
-                          {/* {member.map((item) => (
-                            <li className="d-flex justify-content-between padd">
-                              <div className="list-item">
-                                <img
-                                  src={item.avatar}
-                                  alt="avatar"
-                                  className="avatar pad"
-                                />
-                                <span className="ml-4">{item.name}</span>
-                              </div>
-                              <input
-                                type="checkbox"
-                                className="mt-3 mr-3"
-                                name="assigned"
-                                value={item.id}
-                                checked
-                                onChange={handleChange}
-                              />
-                            </li>
-                          ))} */}
                           {Members.map((item) => (
                             <li className="d-flex justify-content-between padd">
                               <div className="list-item">
@@ -289,7 +281,6 @@ export default function Header() {
                 </select>
               </div>
 
-              {/* <div className="col-2 col-sm-1"></div> */}
               <div className="col-1 col-sm-2">
                 <label htmlFor="project" className="col-form-label text-muted">
                   Customer

@@ -1,7 +1,7 @@
-// import { data } from "jquery";
 import axios from "axios";
 import { React, Component } from "react";
 import { Link } from "react-router-dom";
+import NotificationManager from "react-notifications/lib/NotificationManager";
 
 export class MainDetails extends Component {
   constructor(props) {
@@ -16,7 +16,6 @@ export class MainDetails extends Component {
       stages: []
     };
 
-    // this.changeState = this.changeState.bind(this)
   }
   updateTask = async (e, { ...tasks }) => {
     e.preventDefault();
@@ -34,9 +33,19 @@ export class MainDetails extends Component {
     })
   }
 
+  submitNotification = (e)  => {
+    NotificationManager.success("Sent!", "", 2000)
+  }
+  errorNotification = (e)  => {
+    NotificationManager.error("Not Sent!", "", 2000)
+  }
+  warningNotification = (e)  => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
+  }
+
   changeState = async (e, task, stage) => {
     e.preventDefault()
-
+    this.warningNotification()
     const data = new FormData()
     data.append('stage', stage)
 
@@ -47,8 +56,10 @@ export class MainDetails extends Component {
         data: data
       })
       console.log(response)
+      this.submitNotification()
     }catch(err) {
       console.log(err)
+      this.errorNotification()
     }
     window.location.replace('/')
   }
@@ -62,9 +73,7 @@ export class MainDetails extends Component {
           <div className="cardItem ">
             <div className="row height">
               <div className="col-8 ">
-                {/* <a href="" className="text-decoration-none" onClick={(e) => this.updateTask(e, {items})} data-bs-toggle="modal" data-bs-target="#addTaskModal_2">
-                  <div className="cardTitleText bold">{items.title}</div>
-                </a> */}
+              
                 <Link
                   className="text-decoration-none"
                   to={
@@ -109,14 +118,7 @@ export class MainDetails extends Component {
                       <i className="fa-solid fa-list-check px-1"></i>
                       2/3
                     </button>
-                    {/* <button className="btn">
-                  <i className="fa-solid fa-ellipsis-vertical"></i>
-              </button> */}
-                    {/* <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Dropdown button
-                  </button> */}
                     <div className="dropdown">
-                      {/* className="dropdown-toggle" */}
                       <button
                         className="btn mx-3 border-0"
                         type="button"
@@ -139,65 +141,7 @@ export class MainDetails extends Component {
                         </li>
                       </ul>
                     </div>
-                    {/* <div className="dropdown">
-                     
-                      <button
-                        className="btn p-0 m-0"
-                        type="button"
-                        id="dropdown1"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                        <div style={{width:"12px", height:"12px", backgroundColor: "green", borderRadius: "10rem", padding: "0px", margin:"0px", position: "relative", top:"5px"}}></div>
-              
-                      </button>
-                      <ul className="dropdown-menu" aria-labelledby="dropdown1">
-                        <li>
-                          <a className="dropdown-item text-primary" href="#">
-                            Edit
-                          </a>
-                        </li>
-                        <li>
-                          <a className="dropdown-item text-danger" href="#">
-                            Archive
-                          </a>
-                        </li>
-                      </ul>
-                    </div> */}
-                    {/* <div class="dropdown">
-                      <a
-                       
-                        href="#"
-                        role="button"
-                        id="dropdownMenuLink"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                      >
-                       <div className="dot bg-success"></div>
-                      </a>
-
-                      <ul
-                        class="dropdown-menu"
-                        aria-labelledby="dropdownMenuLink"
-                      >
-                        
-                        <li>
-                          <a class="dropdown-item" href="#">
-                            Pending...
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="#">
-                            In Progress...
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item" href="#">
-                            Done
-                          </a>
-                        </li>
-                      </ul>
-                    </div> */}
+                   
                     <div class="dropdown">
                       <a
                        
@@ -222,22 +166,12 @@ export class MainDetails extends Component {
                           </a>
                         </li>
                         ))}
-                        {/* <li>
-                          <a class="dropdown-item">
-                            In Progress...
-                          </a>
-                        </li>
-                        <li>
-                          <a class="dropdown-item">
-                            Done
-                          </a>
-                        </li> */}
+                        
                       </ul>
                     </div>
                   </div>
                 </div>
               </div>
-              {/* Button */}
               <div className="taskBottom">
                 <p className="cardText bold">
                   <i className="fa-solid fa-clock"></i>&nbsp;
@@ -264,7 +198,7 @@ export class MainDetails extends Component {
               id="addTaskModal_2"
               tabIndex="-1"
               role="dialog"
-              // aria-lablledby="addTaskModalTitle"
+              aria-lablledby="addTaskModalTitle"
               aria-hidden="true"
             >
               <div className="modal-dialog modal-xl" role="document">
@@ -329,22 +263,7 @@ export class MainDetails extends Component {
                         tabIndex="2"
                       >
                         <form>
-                          {/* <div className="input-group flex-nowrap mt-3">
-                                <span
-                                  className="input-group-text"
-                                  id="addon-wrapping"
-                                >
-                                  <i className="fa-solid fa-magnifying-glass"></i>
-                                </span>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Find customer"
-                                  aria-label="Username"
-                                  aria-describedby="addon-wrapping"
-                                  ref={contractNoRef}
-                                />
-                              </div> */}
+                         
                           <div className="input-group mb-3 mt-3">
                             <input
                               type="text"
@@ -373,9 +292,7 @@ export class MainDetails extends Component {
                               </label>
                             </div>
                             <div className="col-3 col-sm-3 mt-2">
-                              {/* {this.state.task.project.name} */}
                             </div>
-                            {/* <div className="col-2">{items.project.name}</div> */}
                             <div className="col-2 col-sm-2"></div>
                             <div className="col-1 col-sm-1">
                               <label
@@ -462,23 +379,6 @@ export function Details(props) {
           <div className="card">
             <div className="card-header">{props.title}</div>
             <div className="card-body">
-              {/* <div className="cardItem">
-                        <div className="row">
-                          <div className="col-8">
-                            <div className="cardTitleText bold">Mohammad Reza Rahimi</div>
-                            <p className='text-muted'>Package-85GB-2Month-1Mbps-(0-8)Free</p>
-                            <br />
-                            <p className="cardText bold">Today</p>
-                          </div>
-                          <div className="col-4 ttt">
-                            <img src="/dist/img/avatar1.jpeg" alt="avatar" className="avatar" />
-                            <img src="/dist/img/avatar2.jpeg" alt="avatar" className="avatar" />
-                            <img src="/dist/img/avatar3.jpeg" alt="avatar" className="avatar" />
-                            <img src="/dist/img/avatar4.jpg" alt="avatar" className="avatar" />
-                          </div>
-                        </div>
-                      </div> */}
-
               {props.children}
             </div>
           </div>

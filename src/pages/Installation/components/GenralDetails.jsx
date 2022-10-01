@@ -1,12 +1,9 @@
 import React from "react"
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 
 export default function GeneralDetails (props) {
     const location = useLocation();
     const data = location.state?.data;
-
-   
    
     return (
         <>
@@ -28,14 +25,13 @@ export default function GeneralDetails (props) {
                 defaultValue={data.contract.contract_no}
               />
             </div>
-            <div className="col-1"></div>
             <label
               htmlFor="inputEmail3"
               className="col-1 col-form-label text-muted"
             >
               <sapn className="textwrap">POC Name</sapn>
             </label>
-            <div className="col-4">
+            <div className="col-4 offset-1">
               <input
                 type="text"
                 name="contract_poc_name"
@@ -64,14 +60,13 @@ export default function GeneralDetails (props) {
               />
               {props.contact}
             </div>
-            <div className="col-1"></div>
             <label
               htmlFor="inputEmail3"
               className="col-1 col-form-label text-muted"
             >
               Organization
             </label>
-            <div className="col-sm-4">
+            <div className="col-4 offset-1">
               <input
                 type="text"
                 name="organization"

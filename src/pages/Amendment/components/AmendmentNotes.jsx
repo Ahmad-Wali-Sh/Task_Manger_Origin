@@ -1,57 +1,85 @@
-import React from 'react'
+import React from "react";
+import axios from "axios";
 
 function AmendmentNotes() {
+  const [amendmentNote, setAmendmentNote] = React.useState([]);
+
+  const AMENDMENT_URL = process.env.REACT_APP_AMENDMENT;
+
+  React.useEffect(() => {
+    axios.get(AMENDMENT_URL).then((res) => {
+      setAmendmentNote(res.data.results);
+      console.log(res.data.results);
+    });
+  }, []);
+
+  console.log(amendmentNote);
+
+  function created(date) {
+    return (
+      new Date(date).getHours() +
+      ":" +
+      (new Date(date).getMinutes() < 10
+        ? "0" + new Date(date).getMinutes()
+        : new Date(date).getMinutes())
+    );
+  }
+
   return (
     <>
-    
-        <div className="card mb-3 ">
-            <div className="row align-items-center mx-3 mt-3 mb-3 shadow-sm p-3 bg-body rounded">
-                <div className="col-1">
-                    <img 
-                    src="../images/avatar4.jpg"
-                    className='avatar'
-                    alt=""
-                    />
-                </div>
-                <div className="col-9">
-                    Mr.Hafiz Alimy
-                </div>
-                <div className="col-2 text-muted" style={{fontSize: "12px"}}>
-                    Today
-                </div>
-
-                <div className="col-10 d-flex offset-1 justify-content-start mt-4">
-                    This is a text to be shown as amendment,
-                    This is a text to be shown as amendment,
-                    This is a text to be shown as amendment
-                </div>
+      {amendmentNote.map((item) => (
+        <div className="card-body shadow p-3 bg-body rounded col-12  ">
+          <div className="row align-items-center mb-3 pb-4 amendment--note">
+            <div className="col-1 col-md-1 col-sm-2 ">
+              <label htmlFor="log_note" className="col-form-label">
+                <img src="../images/avatar1.jpeg" alt="" className="avatar" />
+              </label>
             </div>
-
-            <div className="row align-items-center mx-3 mt-3 mb-3 shadow-sm p-3 bg-body rounded">
-                <div className="col-1">
-                    <img 
-                    src="../images/avatar4.jpg"
-                    className='avatar'
-                    alt=""
-                    />
-                </div>
-                <div className="col-9">
-                    Mr.Hafiz Alimy
-                </div>
-                <div className="col-2 text-muted" style={{fontSize: "12px"}}>
-                    Today
-                </div>
-
-                <div className="col-10 d-flex offset-1 justify-content-start mt-4">
-                    This is a text to be shown as amendment,
-                    This is a text to be shown as amendment,
-                    This is a text to be shown as amendment
-                </div>
+            <div className="col-5 mx-3 mb-1">Mr.Rahman Ali</div>
+            <div
+              className="col-3 offset-1 deadline text-muted mb-1"
+              style={{ fontSize: "12px" }}
+            >
+              {/* {new Date(item.created).getDate() == new Date().getDate()
+                      ? "Today" + " " + created(item.created)
+                      : new Date(item.created).toDateString().slice(0,10)} */}
             </div>
-
+            <div className="col">
+              <div className="row">
+                <div className="dropdown">
+                  <button
+                    className="btn text-muted"
+                    type="button"
+                    id="dropdown1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i className="fa-solid fa-ellipsis-vertical"></i>
+                  </button>
+                  <ul className="dropdown-menu" aria-labelledby="dropdown1">
+                    <li>
+                      <a className="dropdown-item text-primary" href="#">
+                        Edit
+                      </a>
+                    </li>
+                    <li>
+                      <a className="dropdown-item text-danger" href="#">
+                        Archive
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="col-11 col-md-11 col-sm-11 offset-1">
+              {/* {item.body} */}
+              This is a text to show and looks...
+            </div>
+          </div>
         </div>
+      ))}
     </>
-  )
+  );
 }
 
-export default AmendmentNotes
+export default AmendmentNotes;
