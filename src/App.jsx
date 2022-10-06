@@ -9,10 +9,12 @@ import AmendmentDetails from "./pages/Amendment/AmendmentDetails";
 import NotificationContainer from "react-notifications/lib/NotificationContainer";
 import 'react-notifications/lib/notifications.css';
 
-
 export default function App() {
+    
+   
+
+ 
     return (
-        
        <>
        <NotificationContainer />
         <BrowserRouter>

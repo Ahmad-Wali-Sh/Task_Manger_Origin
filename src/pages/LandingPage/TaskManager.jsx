@@ -6,14 +6,22 @@ import Amendment from "../Amendment/components/Amendment";
 import ChangeLocation from "../ChangeLocation/ChangeLocationDetails";
 import { Details, MainDetails } from "../../components/Details";
 import NotificationManager from "react-notifications/lib/NotificationManager";
+import { io } from "socket.io-client";
+import  useWebSocket, { ReadyState }  from "react-use-websocket";
+
 
 export function getDetails(...data) {
   console.log(data);
 }
 
 export default function TaskManager(props) {
+  
+  
+  
+  
+
   let contractState = {
-    contract_no: "",
+  contract: "",
     full_name: "",
     contract: "",
     organization: "",
@@ -25,12 +33,77 @@ export default function TaskManager(props) {
     selectedProject: "",
   };
 
- 
+  // var W3CWebSocket = require('websocket').w3cwebsocket
+  // const client = new W3CWebSocket();
+  // client.connect("ws://localhost:9999", "echo-protocol");
+
+  // client.on("connect", () => {
+  //   console.log("Connected!");
+
+  //   client.addEventListener("message", (data)=>{
+  //     console.log(data)
+  //   })
+  // });
+
+  
+
+
+  // const SocketUrl = "ws://192.168.60.55:8000/ws/socket-server/";
+  
+  // const client = new WebSocket(SocketUrl);
+  // client.onmessage = (e) => {
+  //   let data = JSON.parse(e.data)
+  //     console.log("data:", data)
+  //   }
+
+  //   client.addEventListener("send-notification", (event) => {
+  //     client.send("Hello Server!")
+  //   })
+
+
+  //   client.onmessage = (data) => {
+  //     console.log(data)
+  //   }
+  // client.on("message", "Hello Server")
+
+
+  // useWebSocket(SocketUrl, {
+  //   onOpen: (e) => {
+  //     let data = JSON.parse(e.data)
+  //     console.log("data:", data)
+  //   },
+    
+    // onClose: () => {
+    //   console.log("Closed");
+    // },
+  // });
+
+  const [user, setUser] = React.useState({});
+  React.useEffect(() => {
+    axios
+      .get("http://192.168.60.55:8000/api/user/me/", {})
+      .then((res) => setUser(res.data));
+    console.log(user);
+  }, []);
+
+  // useEffect(() => {
+  //   socket.emit("newUser", {
+  //     senderName: user.name,
+  //   });
+  // }, [user]);
+
+  // const username = user.name
+
+  // useEffect(()=>{
+  //   socket.emit("newUser", {
+  //     senderName: username
+  //   })
+  // },[])
 
   const url = process.env.REACT_APP_CONTRACT;
   const [contract, setContract] = useState(contractState);
   const [project, setProject] = useState(taskProjectState);
- 
+
   let contratsLength = 0;
   const contractNoRef = useRef();
   const projectRef = useRef();
@@ -45,33 +118,39 @@ export default function TaskManager(props) {
     console.log(isChecked);
   }
 
-  const submitNotification = (e)  => {
-    NotificationManager.success("New Task Created!", "", 2000)
-  }
-  const warningNotification = (e)  => {
-    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
-  }
-  const searchSuccessNotification = (e)  => {
-    NotificationManager.success("New Data Recieved", "Done!", 2000)
-  }
+  const submitNotification = (type) => {
+    NotificationManager.success("New Task Created!", "", 2000);
+  };
+  const warningNotification = (e) => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000);
+  };
+  const searchSuccessNotification = (e) => {
+    NotificationManager.success("New Data Recieved", "Done!", 2000);
+  };
+  const receiveNotification = (e) => {
+    NotificationManager.info("New Data Recieved", "New Task Updated!", 5000);
+  };
 
   const [find, setFind] = useState([]);
+
+  // const [socketData, setSocketData] = React.useState([]);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    warningNotification()
+    warningNotification();
     try {
       const res = await axios.get(
-        url + `?contract-no=${contractNoRef.current.value}`
+        TASK_URL + `?contract-number=${contractNoRef.current.value}`
       );
       console.log(res.data.results);
-      setFind(res.data.results[0]);
-      searchSuccessNotification()
+      setFind(res.data.results[0].contract);
+      // setSocketData(res.data.results);
+      searchSuccessNotification();
     } catch (err) {
       console.log(err);
-      const errorNotification = (e)  => {
-        NotificationManager.error(err.message, "Error!", 2000)
-      }
-      errorNotification()
+      const errorNotification = (e) => {
+        NotificationManager.error(err.message, "Error!", 2000);
+      };
+      errorNotification();
     }
   };
 
@@ -120,8 +199,6 @@ export default function TaskManager(props) {
         </div>
       )
   );
-  console.log(contenter);
-
   React.useEffect(() => {
     axios
       .get(TASK_URL, {
@@ -133,6 +210,8 @@ export default function TaskManager(props) {
         setContenter(res.data.results);
       });
   }, []);
+
+
 
   const [stage, setStage] = useState([]);
   const [projecter, setProjecter] = useState([]);
@@ -203,7 +282,13 @@ export default function TaskManager(props) {
     tag: 1,
   });
 
-  console.log(form);
+  // const [socket, setSocket] = React.useState(null)
+
+  // const socket = io("http://localhost:5000");
+
+  // useEffect(()=> {
+  //   setSocket(io("http://localhost:5000"))
+  // })
 
   let handlerChange = (event) => {
     if (event.target.name !== "assigned") {
@@ -229,11 +314,23 @@ export default function TaskManager(props) {
     }
   };
 
-  document.addEventListener("touchstart", function(){}, true);
+  
+
+  document.addEventListener("touchstart", function () {}, true);
+
+  // useEffect(() => {
+  //   socket.on("getNotification", (data) => {
+  //     console.log(data);
+  //     {
+  //       data.receiverName.includes(user.id) && receiveNotification();
+  //     }
+  //   });
+  // }, [user]);
 
   const createTask = async (event) => {
     event.preventDefault();
-    warningNotification()
+    warningNotification();
+    
     const loginForm = new FormData();
     loginForm.append("title", form.title);
     loginForm.append("contract", find.id);
@@ -253,6 +350,10 @@ export default function TaskManager(props) {
       });
       console.log(respone);
       submitNotification()
+      // socket.emit("sendNotification", {
+      //   senderName: user.name,
+      //   receiverName: respone.data.assigned,
+      // });
     } catch (error) {
       console.log(error);
       const errorNotification = (e)  => {
@@ -262,40 +363,97 @@ export default function TaskManager(props) {
     }
   };
 
- 
-
   const [content, setContent] = useState([]);
 
   const [search, setSearch] = React.useState({
     search: "",
+  });
+
+  function SearchHandle(e) {
+    setSearch({ [e.target.name]: e.target.value });
+  }
+
+  const SearchSubmit = async (e) => {
+    e.preventDefault();
+    warningNotification();
+    const SearchForm = new FormData();
+    SearchForm.append("search", search.search);
+
+    axios
+      .get(TASK_URL + `?contract=${search.search}`, {
+        headers: {
+          Authorization: token1,
+        },
+      })
+      .then((res) => {
+        setContenter(res.data.results);
+        searchSuccessNotification();
+      });
+  };
+
+  
+  
+
+  const [message, setMessage] = React.useState('')
+  const [NotificationHistory, setNotificationHistory] = React.useState([])
+
+
+  const ServerURL = "ws://192.168.60.55:8000/ws/socket-server/"
+
+  
+
+  const { readyState, sendJsonMessage } = useWebSocket(ServerURL, {  
+    onOpen: (e) => {
+      console.log(e)
+      sendJsonMessage({
+        type: "greeter",
+        message: "Hi! I catched your data"
+      })
+      e.data.text === "hello world" ? receiveNotification() : submitNotification()
+
+    },
+    
+    
+    onClose: (e) => {
+      console.log(e)
+    },
+    
+    onMessage: (e) => {
+      const data = JSON.parse(e.data)
+
+      
+      switch(data.type) {
+        case "websocket.send":
+          setMessage(data.text)
+          data.text === "hello world" ? receiveNotification() : submitNotification()
+          break;
+
+        case "greeting_respone" :
+          console.log(data.message)
+          data.message == "user-name" ? receiveNotification() : submitNotification();
+        break;
+
+        case "recieve_notification":
+          setNotificationHistory((prev) => {
+            prev.concat(data)
+          })
+
+        default:
+          console.log("Unknown")
+          break;
+      }
+      console.log(e)
+    }
   })
 
-  function SearchHandle (e) {
-    setSearch(
-     { [e.target.name] : e.target.value}
-    )
-  }
-  
-  const SearchSubmit = async (e) => {
-    e.preventDefault()
-    warningNotification()
-    const SearchForm = new FormData();
-    SearchForm.append("search", search.search)
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+  }[readyState];
 
-   
-      axios
-        .get(TASK_URL + `?contract=${search.search}`, {
-          headers: {
-            Authorization: token1,
-          },
-        })
-        .then((res) => {
-          setContenter(res.data.results);
-          searchSuccessNotification()
-        });
-    };
-
-  console.log(search)
 
   return (
     <div>
@@ -315,29 +473,46 @@ export default function TaskManager(props) {
         <section className="content">
           <div className="container">
             <div className="row mb-5">
-              
               <div className="col-10 offset-md-1">
-              <form
-                className="search-container"
-                action="//llamaswill.tumblr.com/search"
-                onSubmit={SearchSubmit}
-              >
-                <input
-                  id="search-box"
-                  type="text"
-                  className="search-box"
-                  name="search"
-                  onChange={SearchHandle}
-                />
-                <label for="search-box">
-                  <span className="search-icon">
-                   
-                  <i class="fa-regular fa-magnifying-glass"></i>
+                <form
+                  className="search-container"
+                  action="//llamaswill.tumblr.com/search"
+                  onSubmit={SearchSubmit}
+                >
+                  <input
+                    id="search-box"
+                    type="text"
+                    className="search-box"
+                    name="search"
+                    onChange={SearchHandle}
+                  />
+                  <label for="search-box">
+                    <span className="search-icon">
+                      <i class="fa-regular fa-magnifying-glass"></i>
+                    </span>
+                  </label>
+                  <input type="submit" id="search-submit" />
+                </form>
+                  <span className="offset-4">The WebSocket currently: {connectionStatus} </span>
+                  <h6 className="offset-4"> Welcome: {message} </h6>
+                  <h6 className="offset-4"> History: {NotificationHistory} </h6>
                   
-                  </span>
-                </label>
-                <input type="submit" id="search-submit" />
-              </form>
+                  <button
+
+                  className="offset-4 btn btn-primary"
+                  onClick={()=>{
+                    sendJsonMessage({
+                      type: "grettings",
+                      message: "Hello Server",
+                    }, 
+                      console.log("send")
+                    )
+                  }}
+                  >
+                    Send Message to Server
+                  </button>
+
+
                 <div className="flexer">
                   {content.map((item) => (
                     <h1>{item.results.title}</h1>
@@ -518,14 +693,15 @@ export default function TaskManager(props) {
                                       >
                                         <i className="fa-solid fa-user"></i>
                                       </span>
+
                                       <input
                                         type="text"
                                         className="form-control"
-                                        placeholder="contract number"
+                                        placeholder="contract"
                                         aria-label="Username"
                                         name="contract"
                                         aria-describedby="basic-addon1"
-                                        value={find.contract_no}
+                                        value={find.contract_number}
                                       />
                                     </div>
                                   </div>
@@ -641,7 +817,7 @@ export default function TaskManager(props) {
                                 </button>
                               </div>
                             </form>
-                            
+
                             {project.selectedProject == "troubleshoot" && (
                               <Troubleshoot />
                             )}
@@ -652,7 +828,6 @@ export default function TaskManager(props) {
                             {project.selectedProject == "amendment" && (
                               <Amendment />
                             )}
-
                           </div>
                           <div
                             class="tab-pane fade"
@@ -661,9 +836,7 @@ export default function TaskManager(props) {
                             aria-labelledby="profile-tab"
                             tabindex="0"
                           >
-                            <div className="d-flex justify-content-center m-4">
-                              
-                            </div>
+                            <div className="d-flex justify-content-center m-4"></div>
                             <div className="col-6 m-auto">
                               <div className="input-group flex-nowrap">
                                 <span
@@ -717,7 +890,6 @@ export default function TaskManager(props) {
               </div>
             </div>
             <div className="details">
-         
               <Details title="Installation" className="spacer">
                 <div className="row">{InstallArray}</div>
               </Details>
@@ -725,8 +897,6 @@ export default function TaskManager(props) {
               <Details title="Troubleshoot" className="spacer">
                 <div className="row">{TroubleArray}</div>
               </Details>
-
-            
 
               <Details title="Online Support" className="spacer">
                 <div className="row">{OnlineArray}</div>
@@ -739,7 +909,6 @@ export default function TaskManager(props) {
               <Details title="Amendment" className="spacer">
                 <div className="row">{AmendArray}</div>
               </Details>
-            
             </div>
           </div>
         </section>

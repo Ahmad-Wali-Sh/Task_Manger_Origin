@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import NotificationManager from "react-notifications/lib/NotificationManager";
 
 export default function Link_Details(props) {
@@ -91,7 +90,7 @@ export default function Link_Details(props) {
       errorNotification();
     }
   };
-
+  
   console.log(linkdetails);
 
   return (
