@@ -7,9 +7,9 @@ import Header from "../../components/Header";
 import Switch from "../../components/Switch";
 import GeneralDetails from "./components/GenralDetails";
 
-const TaskDetails = (props) => {
+const TaskDetails = () => {
   const location = useLocation();
-  const data = location.state?.data;
+  const data = location.state?.data;  
 
   return (
     <div className="page">

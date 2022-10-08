@@ -6,7 +6,6 @@ import Amendment from "../Amendment/components/Amendment";
 import ChangeLocation from "../ChangeLocation/ChangeLocationDetails";
 import { Details, MainDetails } from "../../components/Details";
 import NotificationManager from "react-notifications/lib/NotificationManager";
-import { io } from "socket.io-client";
 import  useWebSocket, { ReadyState }  from "react-use-websocket";
 
 
@@ -16,10 +15,6 @@ export function getDetails(...data) {
 
 export default function TaskManager(props) {
   
-  
-  
-  
-
   let contractState = {
   contract: "",
     full_name: "",
@@ -247,6 +242,9 @@ export default function TaskManager(props) {
       });
   }, []);
 
+
+  
+
   React.useEffect(() => {
     axios
       .get(PROJECT_URL, {
@@ -327,40 +325,54 @@ export default function TaskManager(props) {
   //   });
   // }, [user]);
 
+
+
+
   const createTask = async (event) => {
     event.preventDefault();
     warningNotification();
+    sendJsonMessage({
+      type: "send-notification",
+      senderName: user.name,
+      receiversId: "1" 
+    })
     
-    const loginForm = new FormData();
-    loginForm.append("title", form.title);
-    loginForm.append("contract", find.id);
-    form.assigned.map((item) => loginForm.append("assigned", JSON.parse(item)));
-    loginForm.append("deadline", new Date(form.deadline).toISOString());
-    loginForm.append("project", form.project);
-    loginForm.append("stage", 1);
-    loginForm.append("tag", form.tag);
-    loginForm.append("description", form.description);
+    // const loginForm = new FormData();
+    // loginForm.append("title", form.title);
+    // loginForm.append("contract", find.id);
+    // form.assigned.map((item) => loginForm.append("assigned", JSON.parse(item)));
+    // loginForm.append("deadline", new Date(form.deadline).toISOString());
+    // loginForm.append("project", form.project);
+    // loginForm.append("stage", 1);
+    // loginForm.append("tag", form.tag);
+    // loginForm.append("description", form.description);
 
-    try {
-      const respone = await axios({
-        method: "post",
-        url: TASK_URL,
-        data: loginForm,
-        header: { "Content-Type": "multipart/form-data" },
-      });
-      console.log(respone);
-      submitNotification()
-      // socket.emit("sendNotification", {
-      //   senderName: user.name,
-      //   receiverName: respone.data.assigned,
-      // });
-    } catch (error) {
-      console.log(error);
-      const errorNotification = (e)  => {
-        NotificationManager.error(error.message, "Error!", 2000)
-      }
-      errorNotification()
-    }
+    // try {
+    //   const respone = await axios({
+    //     method: "post",
+    //     url: TASK_URL,
+    //     data: loginForm,
+    //     header: { "Content-Type": "multipart/form-data" },
+    //   });
+    //   console.log(respone);
+    //   submitNotification()
+    //   // socket.emit("sendNotification", {
+    //   //   senderName: user.name,
+    //   //   receiverName: respone.data.assigned,
+    //   // });
+    //   sendJsonMessage({
+    //     type: "send-notification",
+    //     senderName: user.name,
+    //     receiverName: respone.data.assigned
+    //   })
+
+    // } catch (error) {
+    //   console.log(error);
+    //   const errorNotification = (e)  => {
+    //     NotificationManager.error(error.message, "Error!", 2000)
+    //   }
+    //   errorNotification()
+    // }
   };
 
   const [content, setContent] = useState([]);
@@ -405,12 +417,6 @@ export default function TaskManager(props) {
   const { readyState, sendJsonMessage } = useWebSocket(ServerURL, {  
     onOpen: (e) => {
       console.log(e)
-      sendJsonMessage({
-        type: "greeter",
-        message: "Hi! I catched your data"
-      })
-      e.data.text === "hello world" ? receiveNotification() : submitNotification()
-
     },
     
     
@@ -420,23 +426,16 @@ export default function TaskManager(props) {
     
     onMessage: (e) => {
       const data = JSON.parse(e.data)
-
-      
+  
       switch(data.type) {
         case "websocket.send":
           setMessage(data.text)
-          data.text === "hello world" ? receiveNotification() : submitNotification()
           break;
 
-        case "greeting_respone" :
-          console.log(data.message)
-          data.message == "user-name" ? receiveNotification() : submitNotification();
+        case "receive-notification" :
+          console.log(data.receiversId)
+          data.receiversId.includes(user.id) ? receiveNotification() : submitNotification ()
         break;
-
-        case "recieve_notification":
-          setNotificationHistory((prev) => {
-            prev.concat(data)
-          })
 
         default:
           console.log("Unknown")
@@ -451,7 +450,7 @@ export default function TaskManager(props) {
     [ReadyState.OPEN]: 'Open',
     [ReadyState.CLOSING]: 'Closing',
     [ReadyState.CLOSED]: 'Closed',
-    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated'
   }[readyState];
 
 
@@ -502,7 +501,7 @@ export default function TaskManager(props) {
                   className="offset-4 btn btn-primary"
                   onClick={()=>{
                     sendJsonMessage({
-                      type: "grettings",
+                      type: "send-notification",
                       message: "Hello Server",
                     }, 
                       console.log("send")

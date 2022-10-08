@@ -4,73 +4,8 @@ import axios from "axios";
 import Picker from "emoji-picker-react";
 import NotificationManager from "react-notifications/lib/NotificationManager";
 
-
-
 function AmendmentLog(props) {
-  const TASK_LOG_URL = process.env.REACT_APP_TASK_LOG;
-  const [logmessage, setLogMessage] = React.useState({
-    body: "",
-    task: props.id,
-  });
-  const [note, setNote] = React.useState([]);
-
-  const [inputStr, setInputStr] = useState("");
-
-  const onEmojiClick = (event) => {
-    setInputStr((prevInput) => prevInput + event.emoji);
-  };
-
-  const submitNotification = (e)  => {
-    e.preventDefault()
-    NotificationManager.success("Sent!", "", 2000)
-  }
-  const errorNotification = (e)  => {
-    e.preventDefault()
-    NotificationManager.error("Not Sent!", "", 2000)
-  }
-  const warningNotification = (e)  => {
-    e.preventDefault()
-    NotificationManager.warning("Sending Your Data...", "Pending", 2000)
-  }
-
-  
-
-
-
-  const NoteSubmit = (e) => {
-    e.preventDefault()
-  }
-
-  console.log(inputStr);
-
-  const LogMessageSubmit = async (e) => {
-    e.preventDefault();
-    const LogMessageForm = new FormData();
-    LogMessageForm.append("body", inputStr);
-    LogMessageForm.append("task", logmessage.task);
-
-    try {
-      const response = await axios({
-        method: "POST",
-        url: TASK_LOG_URL,
-        data: LogMessageForm,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  console.log(props.id);
-
-  React.useEffect(() => {
-    axios
-      .get(TASK_LOG_URL + `?id=${props.id}`, {})
-      .then((res) => setNote(res.data.results));
-    console.log(note);
-  }, []);
+  const AMENDMENT_URL = process.env.REACT_APP_AMENDMENT;
 
   const [user, setUser] = React.useState({});
   React.useEffect(() => {
@@ -80,6 +15,68 @@ function AmendmentLog(props) {
     console.log(user);
   }, []);
 
+
+  const [logmessage, setLogMessage] = React.useState({
+    message: "",
+    task: props.id,
+    user: user.id
+  });
+
+  const [note, setNote] = React.useState([]);
+
+  const [inputStr, setInputStr] = useState("");
+
+  const onEmojiClick = (event) => {
+    setInputStr((prevInput) => prevInput + event.emoji);
+  };
+
+  const submitNotification = (e) => {
+    NotificationManager.success("Sent!", "", 2000);
+  };
+  
+  const warningNotification = (e) => {
+    NotificationManager.warning("Sending Your Data...", "Pending", 2000);
+  };
+
+  const NoteSubmit = (e) => {
+  };
+
+  console.log(props.id)
+  console.log(inputStr);
+
+  const LogMessageSubmit = async (e) => {
+    e.preventDefault();
+    warningNotification()
+    const LogMessageForm = new FormData();
+    LogMessageForm.append("message", inputStr);
+    LogMessageForm.append("task", props.id);
+    LogMessageForm.append("user", user.id);
+
+
+    try {
+      const response = await axios({
+        method: "POST",
+        url: AMENDMENT_URL,
+        data: LogMessageForm,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response);
+      submitNotification()
+    } catch (err) {
+      console.log(err);
+      const errorNotification = (e) => {
+        NotificationManager.error(err.message, "Error", 2000);
+      };
+      errorNotification();
+    }
+    window.location.replace('amendment')
+  };
+  console.log(props.id);
+
+
+  
   return (
     <>
       <div className="row mt-4" style={{ boxSizing: "content-box" }}>
@@ -93,7 +90,7 @@ function AmendmentLog(props) {
           <textarea
             autosize="true"
             id="log_note"
-            name="body"
+            name="message"
             placeholder="Send Your Message..."
             className="form-control text-area"
             rows="2"
@@ -102,14 +99,13 @@ function AmendmentLog(props) {
           ></textarea>
         </div>
         <div className="col-1">
-          <form onSubmit={NoteSubmit}>
+          <form onSubmit={LogMessageSubmit}>
             <button
               type="submit"
               className="btn btn-secondary message--send btn-sm"
-              onClick={logmessage.response == 'created' ? submitNotification : submitNotification}
+              
             >
               <i class="fa-solid fa-paper-plane"></i>
-              
             </button>
           </form>
         </div>
@@ -135,14 +131,14 @@ function AmendmentLog(props) {
                   height={300}
                   onEmojiClick={onEmojiClick}
                   previewConfig={{
-                    showPreview: false
+                    showPreview: false,
                   }}
                 />
               </li>
             </ul>
           </div>
         </div>
-        <div className="col-1 clip">
+        <div className="col-1 clip mx-2">
           <button
             className="border-0 text-muted"
             type="button"

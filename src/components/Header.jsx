@@ -2,13 +2,11 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import NotificationManager from "react-notifications/lib/NotificationManager";
-import { io } from "socket.io-client";
 
 export default function Header() {
   const location = useLocation();
   const data = location.state?.data;
   const member = data.assigned;
-  const socket = io("http://localhost:5000")
   const MEMBERS_URL = process.env.REACT_APP_MEMBERS;
   const TASK_URL = process.env.REACT_APP_TASK;
 
@@ -66,7 +64,6 @@ export default function Header() {
     e.preventDefault();
     warningNotification();
     const MemberForm = new FormData();
-    socket.emit('send-notification', "This is data sended via Header")
     memberList.assigned.map((item) => MemberForm.append("assigned", item));
     try {
       const response = await axios({

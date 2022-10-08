@@ -16,6 +16,11 @@
   border-radius: 10px;
 }
 
+.myScroll {
+  display: flex; 
+  flex-direction: column-reverse;
+}
+
 .amendment--note {
   padding: 10px 0 0 10px;
   margin: 7px;

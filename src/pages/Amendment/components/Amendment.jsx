@@ -1,49 +1,11 @@
 import axios from "axios";
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 export default function Amendment() {
-  const [amendmentData, setAmendmentData] = React.useState([]);
-  const [count, setCount] = React.useState([]);
-  const [taskID, setTaskID] = React.useState([]);
-
-  const AMENDMENT_URL = process.env.REACT_APP_AMENDMENT;
-
-  let handlerChange = (event) => {
-    setAmendmentData({
-      ...amendmentData,
-      [event.target.name]: event.target.value,
-    });
-    console.log(event.target.value);
-  };
-
-  React.useEffect(() => {
-    axios.get(AMENDMENT_URL).then((res) => {
-      setAmendmentData(res.data.results);
-      setCount(res.data.count);
-      setTaskID(res.data.results.map((item) => item.id));
-      console.log(res.data.results);
-    });
-  }, []);
-
-  const AmendmentSubmit = async (e) => {
-    e.preventDefault();
-    const data = new FormData();
-
-    console.log(count);
-    try {
-      const response = await axios({
-        method: count > 0 ? "PATCH" : "POST",
-        url: count > 0 ? AMENDMENT_URL + `${taskID}/` : AMENDMENT_URL,
-        data: data,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-    } catch (err) {
-      console.log(err.message);
-      
-    }
-  };
+  const location = useLocation();
+  const data = location.state?.data;
+ 
 
   return (
     <section>
@@ -66,6 +28,7 @@ export default function Amendment() {
                     id="troubleshoot_title"
                     placeholder="..."
                     className="form-control"
+                    value={data.title}
                   />
                 </div>
               </div>
@@ -99,6 +62,7 @@ export default function Amendment() {
                         placeholder="Leave a description here"
                         id="floatingTextarea"
                         rows="6"
+                        value={data.description}
                       ></textarea>
                     </div>
                   </div>

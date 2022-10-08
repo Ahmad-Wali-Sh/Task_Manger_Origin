@@ -6,6 +6,7 @@ import CheckList from "../../components/CheckList";
 import Switch from "../../components/Switch";
 import Link_Details from "../../components/Link_Details";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 export default function ChangeLocationDetails() {
   const location = useLocation();

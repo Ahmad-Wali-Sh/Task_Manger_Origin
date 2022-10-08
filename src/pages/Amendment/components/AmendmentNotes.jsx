@@ -1,15 +1,14 @@
 import React from "react";
 import axios from "axios";
 
-function AmendmentNotes() {
+function AmendmentNotes(props) {
   const [amendmentNote, setAmendmentNote] = React.useState([]);
 
-  const AMENDMENT_URL = process.env.REACT_APP_AMENDMENT;
+  const AMENDMENT_URL = process.env.REACT_APP_AMENDMENT
 
   React.useEffect(() => {
-    axios.get(AMENDMENT_URL).then((res) => {
+    axios.get(AMENDMENT_URL + `?id=${props.id}`).then((res) => {
       setAmendmentNote(res.data.results);
-      console.log(res.data.results);
     });
   }, []);
 
@@ -27,7 +26,8 @@ function AmendmentNotes() {
 
   return (
     <>
-      {amendmentNote.map((item) => (
+      {amendmentNote  
+      .map((item) => (
         <div className="card-body shadow p-3 bg-body rounded col-12  ">
           <div className="row align-items-center mb-3 pb-4 amendment--note">
             <div className="col-1 col-md-1 col-sm-2 ">
@@ -35,14 +35,14 @@ function AmendmentNotes() {
                 <img src="../images/avatar1.jpeg" alt="" className="avatar" />
               </label>
             </div>
-            <div className="col-5 mx-3 mb-1">Mr.Rahman Ali</div>
+            <div className="col-5 mx-3 mb-1">{item.user.name}</div>
             <div
               className="col-3 offset-1 deadline text-muted mb-1"
               style={{ fontSize: "12px" }}
             >
-              {/* {new Date(item.created).getDate() == new Date().getDate()
+              {new Date(item.created).getDate() == new Date().getDate()
                       ? "Today" + " " + created(item.created)
-                      : new Date(item.created).toDateString().slice(0,10)} */}
+                      : new Date(item.created).toDateString().slice(0,10)}
             </div>
             <div className="col">
               <div className="row">
@@ -72,12 +72,12 @@ function AmendmentNotes() {
               </div>
             </div>
             <div className="col-11 col-md-11 col-sm-11 offset-1">
-              {/* {item.body} */}
-              This is a text to show and looks...
+              {item.message}
+              
             </div>
           </div>
         </div>
-      ))}
+       ))} 
     </>
   );
 }
