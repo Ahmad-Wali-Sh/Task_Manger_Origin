@@ -44,7 +44,7 @@ export default function Header() {
   const handleChange = (event) => {
     if (event.target.checked) {
       setMemberList((prevState) => ({
-        ...memberList,
+        
         assigned: [...prevState.assigned, event.target.value],
       }));
     }
@@ -90,7 +90,7 @@ export default function Header() {
     window.location.replace("");
   };
   const assign = details.map((item) => item.id);
-
+  console.log(assign)
   return (
     <>
       <h1>{data.title}</h1>
