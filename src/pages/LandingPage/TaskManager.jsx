@@ -7,14 +7,20 @@ import ChangeLocation from "../ChangeLocation/ChangeLocationDetails";
 import { Details, MainDetails } from "../../components/Details";
 import NotificationManager from "react-notifications/lib/NotificationManager";
 import  useWebSocket, { ReadyState }  from "react-use-websocket";
+import { w3cwebsocket, W3CWebSocket } from "websocket";
+import { Context } from "../../context/Context";
 
 
 export function getDetails(...data) {
   console.log(data);
 }
 
+
+
 export default function TaskManager(props) {
+
   
+  // console.log(Context)
   let contractState = {
   contract: "",
     full_name: "",
@@ -40,7 +46,6 @@ export default function TaskManager(props) {
   //   })
   // });
 
-  
 
 
   // const SocketUrl = "ws://192.168.60.55:8000/ws/socket-server/";
@@ -327,52 +332,46 @@ export default function TaskManager(props) {
 
 
 
-
   const createTask = async (event) => {
     event.preventDefault();
     warningNotification();
-    sendJsonMessage({
-      type: "send-notification",
-      senderName: user.name,
-      receiversId: "1" 
-    })
     
-    // const loginForm = new FormData();
-    // loginForm.append("title", form.title);
-    // loginForm.append("contract", find.id);
-    // form.assigned.map((item) => loginForm.append("assigned", JSON.parse(item)));
-    // loginForm.append("deadline", new Date(form.deadline).toISOString());
-    // loginForm.append("project", form.project);
-    // loginForm.append("stage", 1);
-    // loginForm.append("tag", form.tag);
-    // loginForm.append("description", form.description);
+    const loginForm = new FormData();
+    loginForm.append("title", form.title);
+    loginForm.append("contract", find.id);
+    form.assigned.map((item) => loginForm.append("assigned", JSON.parse(item)));
+    loginForm.append("deadline", new Date(form.deadline).toISOString());
+    loginForm.append("project", form.project);
+    loginForm.append("stage", 1);
+    loginForm.append("tag", form.tag);
+    loginForm.append("description", form.description);
 
-    // try {
-    //   const respone = await axios({
-    //     method: "post",
-    //     url: TASK_URL,
-    //     data: loginForm,
-    //     header: { "Content-Type": "multipart/form-data" },
-    //   });
-    //   console.log(respone);
-    //   submitNotification()
-    //   // socket.emit("sendNotification", {
-    //   //   senderName: user.name,
-    //   //   receiverName: respone.data.assigned,
-    //   // });
-    //   sendJsonMessage({
-    //     type: "send-notification",
-    //     senderName: user.name,
-    //     receiverName: respone.data.assigned
-    //   })
-
-    // } catch (error) {
-    //   console.log(error);
-    //   const errorNotification = (e)  => {
-    //     NotificationManager.error(error.message, "Error!", 2000)
-    //   }
-    //   errorNotification()
-    // }
+    try {
+      const respone = await axios({
+        method: "post",
+        url: TASK_URL,
+        data: loginForm,
+        header: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(respone);
+      submitNotification()
+      // socket.emit("sendNotification", {
+      //   senderName: user.name,
+      //   receiverName: respone.data.assigned,
+      // });
+      sendJsonMessage({
+        "message": respone.data.assigned.filter(function(item){
+          return item !== user.id
+        })  
+      })
+      
+    } catch (error) {
+      console.log(error);
+      const errorNotification = (e)  => {
+        NotificationManager.error(error.message, "Error!", 2000)
+      }
+      errorNotification()
+    }
   };
 
   const [content, setContent] = useState([]);
@@ -410,37 +409,41 @@ export default function TaskManager(props) {
   const [NotificationHistory, setNotificationHistory] = React.useState([])
 
 
-  const ServerURL = "ws://192.168.60.55:8000/ws/socket-server/"
+  const ServerURL = "ws://192.168.60.55:8000/ws/notification/"
 
   
+  const token = React.useContext(Context)
 
-  const { readyState, sendJsonMessage } = useWebSocket(ServerURL, {  
+
+  const { readyState, sendJsonMessage, send } = useWebSocket(ServerURL, {  
     onOpen: (e) => {
       console.log(e)
     },
-    
-    
+
     onClose: (e) => {
       console.log(e)
     },
     
     onMessage: (e) => {
       const data = JSON.parse(e.data)
-  
-      switch(data.type) {
-        case "websocket.send":
-          setMessage(data.text)
-          break;
 
-        case "receive-notification" :
-          console.log(data.receiversId)
-          data.receiversId.includes(user.id) ? receiveNotification() : submitNotification ()
-        break;
+      
+      data.data.value.message.includes(user.id) && receiveNotification() 
+      console.log(data.data.value.message)
+      // switch(data.type) {
+      //   case "websocket.send":
+      //     setMessage(data.text)
+      //     break;
 
-        default:
-          console.log("Unknown")
-          break;
-      }
+      //   case "send_notification" :
+      //     console.log(data.value)
+      //     data.data.value.message.includes(user.id) ? receiveNotification() : submitNotification ()
+      //   break;
+
+      //   default:
+      //     console.log("Unknown")
+      //     break;
+      // }
       console.log(e)
     }
   })
@@ -493,23 +496,22 @@ export default function TaskManager(props) {
                   <input type="submit" id="search-submit" />
                 </form>
                   <span className="offset-4">The WebSocket currently: {connectionStatus} </span>
-                  <h6 className="offset-4"> Welcome: {message} </h6>
+                  {/* <h6 className="offset-4"> Welcome: {message} </h6>
                   <h6 className="offset-4"> History: {NotificationHistory} </h6>
                   
                   <button
-
-                  className="offset-4 btn btn-primary"
                   onClick={()=>{
                     sendJsonMessage({
-                      type: "send-notification",
-                      message: "Hello Server",
-                    }, 
-                      console.log("send")
-                    )
+                      "message": [1,2,3].filter(function(item){
+                        return item !== user.id
+                      }),   
+                    })
                   }}
+                  className="offset-4 btn btn-primary"
+                 
                   >
                     Send Message to Server
-                  </button>
+                  </button> */}
 
 
                 <div className="flexer">

@@ -8,6 +8,7 @@ import CheckList from "../../components/CheckList";
 import Link_Details from "../../components/Link_Details";
 import axios from "axios";
 
+
 const TroubleshootDetails = (props) => {
   const location = useLocation();
   const data = location.state?.data;
