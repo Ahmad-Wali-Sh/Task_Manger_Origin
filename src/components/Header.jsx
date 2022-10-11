@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import NotificationManager from "react-notifications/lib/NotificationManager";
+import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 
 export default function Header() {
   const location = useLocation();
@@ -9,6 +10,40 @@ export default function Header() {
   const member = data.assigned;
   const MEMBERS_URL = process.env.REACT_APP_MEMBERS;
   const TASK_URL = process.env.REACT_APP_TASK;
+
+
+  const [user, setUser] = React.useState({});
+  React.useEffect(() => {
+    axios
+      .get("http://192.168.60.55:8000/api/user/me/", {})
+      .then((res) => setUser(res.data));
+    console.log(user);
+  }, []);
+
+  const receiveNotification = (e) => {
+    NotificationManager.info("New Data Recieved", "New Task Updated!", 5000);
+  };
+
+  const ServerURL = "ws://192.168.60.55:8000/ws/notification/"
+
+  const { sendJsonMessage } = useWebSocket(ServerURL, {  
+    onOpen: (e) => {
+      console.log(e)
+    },
+
+    onClose: (e) => {
+      console.log(e)
+    },
+    
+    onMessage: (e) => {
+      const data = JSON.parse(e.data)
+      data.data.value.message.includes(user.id) && receiveNotification() 
+    }
+  })
+
+
+
+
 
   const [Members, setMembers] = React.useState([]);
   React.useEffect(() => {
@@ -65,6 +100,8 @@ export default function Header() {
     warningNotification();
     const MemberForm = new FormData();
     memberList.assigned.map((item) => MemberForm.append("assigned", item));
+    
+    
     try {
       const response = await axios({
         method: "PATCH",
@@ -75,11 +112,17 @@ export default function Header() {
         },
       });
       console.log(response);
+      sendJsonMessage({
+        "message": response.data.assigned.filter(function(item){
+          return item !== user.id
+        })  
+      })
       submitNotification();
       axios.get(TASK_URL + `${data.id}/`, {}).then((res) => {
         setDetails(res.data.assigned);
         setMemberList({ assigned: res.data.assigned });
       });
+
     } catch (err) {
       console.log(err);
       const errorNotification = (e) => {
@@ -87,7 +130,6 @@ export default function Header() {
       };
       errorNotification();
     }
-    window.location.replace("");
   };
   const assign = details.map((item) => item.id);
   console.log(assign)
